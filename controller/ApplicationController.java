@@ -79,9 +79,25 @@ public class ApplicationController {
 			switch (option) {
 			case "vote":
 				voteSender.sendVote(selection);
+				voteView.reduceVoters();
 				break;
 			case "exit":
 				Runtime.getRuntime().exit(0);
+				break;
+			case "open":
+				int temp = voteView.getVotersNum();
+				if (temp != 0)	{
+					VoteReceiver.getInstance().setVoters(temp);
+					VoteReceiver.getInstance().createKeys();
+					voteSender.requestPublicKeys();
+					voteView.swapCards("voteScreen");
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Please enter a valid number of voters");
+				}
+				break;
+			case "tally":
+				VoteReceiver.getInstance().tallyVotes();
 				break;
 			}
 			
