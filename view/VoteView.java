@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -33,6 +34,10 @@ public class VoteView extends JPanel {
 	private JLabel title;
 	private JLabel howMany;
 	private JLabel votersLeft;
+	
+	private JLabel voteCount1;
+	private JLabel voteCount2;
+	private JLabel voteCount3;
 	
 	//Checkboxes
 	private JCheckBox check1;
@@ -87,6 +92,10 @@ public class VoteView extends JPanel {
 		howMany = new JLabel ("How many voters?");
 		votersLeft = new JLabel ("Voters left to vote: " + 0);
 		
+		voteCount1 = new JLabel("");
+		voteCount2 = new JLabel("");
+		voteCount3 = new JLabel("");
+		
 		//Checkbox setup
 		check1 = new JCheckBox("Jacob");
 		check2 = new JCheckBox("Nicole");
@@ -122,6 +131,9 @@ public class VoteView extends JPanel {
 		verticalContainer.add(buttonPanel);
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,50)));
 		verticalContainer.add(votersLeft);
+		verticalContainer.add(voteCount1);
+		verticalContainer.add(voteCount2);
+		verticalContainer.add(voteCount3);
 		
 		mainCards.add(menuPanel, "menuScreen");
 		mainCards.add(verticalContainer, "voteScreen");
@@ -154,5 +166,10 @@ public class VoteView extends JPanel {
 		votersLeft.setText("Voters left to vote: " + voterCounter);
 	}
 	
+	public void setVoteCount(List<Integer> votes){
+		voteCount1.setText("Votes for candidate one: " + votes.get(0));
+		voteCount2.setText("Votes for candidate two: " + votes.get(1));
+		voteCount3.setText("Votes for candidate three: " + votes.get(2));
+	}
 
 }

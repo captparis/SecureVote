@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -97,7 +98,8 @@ public class ApplicationController {
 				}
 				break;
 			case "tally":
-				VoteReceiver.getInstance().tallyVotes();
+				List<Integer> candidateVotes = VoteReceiver.getInstance().tallyVotes();
+				voteView.setVoteCount(candidateVotes);
 				break;
 			}
 			

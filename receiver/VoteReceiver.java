@@ -20,6 +20,7 @@ public class VoteReceiver {
 	
 	//Vote storage variables
 	private List<BigInteger> votes = new ArrayList<BigInteger>();
+	private List<Integer> candidateVotes = new ArrayList<Integer>();
 	
 	//Private key variables
 	private long privateKey1;
@@ -279,19 +280,28 @@ public class VoteReceiver {
 	
 	//Cloud calculation methods
 	
-	public void tallyVotes(){
+	public List<Integer> tallyVotes(){
 		BigInteger tally = cloud.addEncrypted(votes, nSquared);
-		decryptTally(tally);
+		return decryptTally(tally);
 	}
 	
-	public void decryptTally(BigInteger tally){
+	public List<Integer> decryptTally(BigInteger tally){
 		BigInteger u = tally.pow((int)privateKey1);
 		u = u.remainder(nSquared);
 		u = u.subtract(BigInteger.ONE);
 		u = u.divide(n);
 		BigInteger L = u.multiply(bigPrivate2);
 		BigInteger m = L.remainder(n);
+		int intM = m.intValue();
 		System.out.println("Decrypted tally is " + m);
+		candidateVotes.add((int) Math.floor((intM / Math.pow(10, 0)) % 10));
+		candidateVotes.add((int) Math.floor((intM / Math.pow(10, 1)) % 10));
+		candidateVotes.add((int) Math.floor((intM / Math.pow(10, 2)) % 10));
 		
+		System.out.println("Number of votes for candidate 1 = " + (Math.floor((intM / Math.pow(10, 0)) % 10)));
+		System.out.println("Number of votes for candidate 2 = " + (Math.floor((intM / Math.pow(10, 1)) % 10)));
+		System.out.println("Number of votes for candidate 3 = " + (Math.floor((intM / Math.pow(10, 2)) % 10)));
+		
+		return candidateVotes;
 	}
 }
