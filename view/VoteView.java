@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
@@ -22,6 +23,8 @@ public class VoteView extends JPanel {
 	private JPanel verticalContainer;
 	private JPanel candidatePanel;
 	private JPanel buttonPanel;
+	private JPanel votedPanel;
+	private JPanel voteCards;
 	
 	//Buttons
 	private JButton openVoting;
@@ -34,6 +37,7 @@ public class VoteView extends JPanel {
 	private JLabel title;
 	private JLabel howMany;
 	private JLabel votersLeft;
+	private JLabel thankYou;
 	
 	private JLabel voteCount1;
 	private JLabel voteCount2;
@@ -49,9 +53,10 @@ public class VoteView extends JPanel {
 	
 	//Layouts
 	private CardLayout mainLayout;
+	private CardLayout voteLayout;
 	
 	//Variables
-	private int voterCounter;
+	public int voterCounter;
 	
 	public VoteView(ItemListener listener, ActionListener buttonListener){
 		
@@ -61,14 +66,19 @@ public class VoteView extends JPanel {
 		verticalContainer = new JPanel();
 		candidatePanel = new JPanel();
 		buttonPanel = new JPanel();
+		votedPanel = new JPanel();
+		voteCards = new JPanel();
 		
 		mainCards.setLayout(new CardLayout());
+		voteCards.setLayout(new CardLayout());
 		candidatePanel.setLayout(new BoxLayout(candidatePanel, BoxLayout.Y_AXIS));
 		verticalContainer.setLayout(new BoxLayout(verticalContainer, BoxLayout.Y_AXIS));
+		
 		
 		candidatePanel.setPreferredSize(new Dimension(512, 100));
 		
 		mainLayout = (CardLayout)mainCards.getLayout();
+		voteLayout = (CardLayout)voteCards.getLayout();
 		
 		//Button setup
 		vote = new JButton("Vote");
@@ -91,15 +101,16 @@ public class VoteView extends JPanel {
 		title = new JLabel("Cast your vote");
 		howMany = new JLabel ("How many voters?");
 		votersLeft = new JLabel ("Voters left to vote: " + 0);
+		thankYou = new JLabel("Thank you for voting");
 		
 		voteCount1 = new JLabel("");
 		voteCount2 = new JLabel("");
 		voteCount3 = new JLabel("");
 		
 		//Checkbox setup
-		check1 = new JCheckBox("Jacob");
-		check2 = new JCheckBox("Nicole");
-		check3 = new JCheckBox("Moogle");
+		check1 = new JCheckBox("John");
+		check2 = new JCheckBox("Fred");
+		check3 = new JCheckBox("Sarah");
 		check1.setName("1");
 		check2.setName("2");
 		check3.setName("3");
@@ -123,10 +134,15 @@ public class VoteView extends JPanel {
 		buttonPanel.add(exit);
 		buttonPanel.add(tally);
 		
+		votedPanel.add(thankYou);
+		
+		voteCards.add(candidatePanel, "candidates");
+		voteCards.add(votedPanel, "voteOver");
+		
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,20)));
 		verticalContainer.add(title);
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,50)));
-		verticalContainer.add(candidatePanel);
+		verticalContainer.add(voteCards);
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,50)));
 		verticalContainer.add(buttonPanel);
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,50)));
@@ -141,9 +157,10 @@ public class VoteView extends JPanel {
 		
 		
 		this.add(mainCards);
-		this.setPreferredSize(new Dimension(512, 512));
+		this.setPreferredSize(new Dimension(1024, 640));
 		
 		mainLayout.show(mainCards, "menuScreen");
+		voteLayout.show(voteCards, "candidates");
 	}
 	
 	public void swapCards(String cardName){
@@ -166,7 +183,10 @@ public class VoteView extends JPanel {
 		votersLeft.setText("Voters left to vote: " + voterCounter);
 	}
 	
+	//Called after tally - voting is complete
 	public void setVoteCount(List<Integer> votes){
+		voteLayout.show(voteCards, "voteOver");
+		votersLeft.setText("Registered voters who did not cast a vote: " + voterCounter);
 		voteCount1.setText("Votes for candidate one: " + votes.get(0));
 		voteCount2.setText("Votes for candidate two: " + votes.get(1));
 		voteCount3.setText("Votes for candidate three: " + votes.get(2));

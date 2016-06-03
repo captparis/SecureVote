@@ -12,33 +12,47 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import receiver.UserManager;
 import receiver.VoteReceiver;
+import view.MenuView;
+import view.ViewController;
 import view.VoteView;
 import voter.VoteSender;
 
 
 public class ApplicationController {
 	
+	private MenuView menuView;
 	private VoteView voteView;
+	private ViewController viewController;
+	private UserManager userManager;
+	
 	private int selectionCounter = 0;
 	private int selectionMax = 1;
-	private int selection;
+	private int selection1;
+	private int selection2;
 	
 	VoteListener voteListener = new VoteListener();
-	ButtonListener buttonListener = new ButtonListener();
+	VoteButtonListener voteButtonListener = new VoteButtonListener();
+	MenuButtonListener menuButtonListener = new MenuButtonListener();
 	
 	private VoteSender voteSender;
 	
 
 	public ApplicationController(JFrame mainWindow) {
 		
-		voteView = new VoteView(voteListener, buttonListener);
+		voteView = new VoteView(voteListener, voteButtonListener);
+		menuView = new MenuView(menuButtonListener);
+		
+		viewController = new ViewController(menuView, voteView, mainWindow);
+		userManager = new UserManager();
 		
 		voteSender = new VoteSender();
 		
 		//mainWindow.add(voteView);
 		
-		mainWindow.getContentPane().add(voteView);
+		mainWindow.getContentPane().add(viewController.mainCards);
+		
 		
 	}
 	
@@ -47,6 +61,8 @@ public class ApplicationController {
 	
 	//Listeners
 	
+	//Listens for voter selection
+	
 	class VoteListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e){
@@ -54,15 +70,18 @@ public class ApplicationController {
 			
 			if (source.isSelected()){
 				selectionCounter ++;
-				if (selectionCounter > selectionMax){
+				//if (selectionCounter > selectionMax){
 					//selectionCounter --;
-					JOptionPane.showMessageDialog(null, "Only one candidate can be selected. Please deselect previous candidate and try again.");
-				}
-				else {
+					//JOptionPane.showMessageDialog(null, "Only one candidate can be selected. Please deselect previous candidate and try again.");
+				//}
+				//else {
 					
 					String selectionName = ((Component) e.getSource()).getName();
-					selection = Integer.parseInt(selectionName);
-				}
+					if (selection1 == 0)
+						selection1 = Integer.parseInt(selectionName);
+					else 
+						selection2 = Integer.parseInt(selectionName);
+				//}
 			}
 			else {
 				selectionCounter--;
@@ -71,7 +90,9 @@ public class ApplicationController {
 	
 	}
 	
-	class ButtonListener implements ActionListener {
+	//Listens for button presses in the VoteView
+	
+	class VoteButtonListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -79,8 +100,15 @@ public class ApplicationController {
 
 			switch (option) {
 			case "vote":
-				voteSender.sendVote(selection);
-				voteView.reduceVoters();
+				if (voteView.voterCounter < 1){
+					JOptionPane.showMessageDialog(null, "All voters have voted, please tally votes");
+				}
+				else {
+					voteSender.sendVote(selection1, selection2);
+					voteView.reduceVoters();
+					selection1 = 0;
+					selection2 = 0;
+				}
 				break;
 			case "exit":
 				Runtime.getRuntime().exit(0);
@@ -106,5 +134,49 @@ public class ApplicationController {
 		}
 		
 	}
+	
+	//Listens for button presses in the MenuView
+	
+	class MenuButtonListener implements ActionListener {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String option = ((JButton) e.getSource()).getName();
+
+			switch (option) {
+			case "exit":
+				Runtime.getRuntime().exit(0);
+				break;
+			case "login":
+				viewController.login();
+				break;
+			case "loginconfirm":
+				String user = menuView.getUserInput();
+				String pass = menuView.getPassInput();
+				if (userManager.checkValidUser(user, pass)){
+					viewController.loggedIn(user);
+				}
+				else {
+					menuView.setMessage("Invalid username or password, please try again");
+				}
+				break;
+			case "registerconfirm":
+				System.out.println("Registering");
+				String newUser = menuView.getUserInput();
+				String newPass = menuView.getPassInput();
+				userManager.addUser(newUser, newPass);
+				viewController.registered();
+				break;
+			case "register":
+				viewController.register();
+				break;
+			case "admin":
+				break;
+			case "ok":
+				break;
+			}
+			
+		}
+		
+	}
 }

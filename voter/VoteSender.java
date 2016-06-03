@@ -64,10 +64,12 @@ public class VoteSender {
 		publicKeys = voteReceiver.keys;
 	}
 	
-	public void sendVote(int candidate){
-		System.out.println("Candidate is " + candidate);
-		//publicKey = voteReceiver.createKeys();
-		int candidateValue = (int) Math.pow(10, (candidate - 1));
+	public void sendVote(int candidate1, int candidate2){
+		System.out.println("Candidate 1 is " + candidate1 + " candidate 2 is " + candidate2);
+		int candidateValue = (int) Math.pow(10, (candidate1 - 1));
+		//Check is a second candidate was selected
+		if (candidate2 != 0)
+			candidateValue = candidateValue + ((int) Math.pow(10, (candidate2 - 1)));
 		encryptVote(candidateValue);
 	}
 	
