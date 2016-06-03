@@ -21,6 +21,9 @@ public class VoteSender {
 	public BigInteger randomPower;
 	public BigInteger nSquare;
 	
+	//Holds username of active user
+	public String activeUser = "";
+	
 
 	public VoteSender() {
 		voteReceiver = VoteReceiver.getInstance();

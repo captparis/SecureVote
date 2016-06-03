@@ -14,6 +14,12 @@ import cloud.CloudVoteCalculator;
 
 public class VoteReceiver {
 	
+	private enum VotingState {
+		CLOSED, OPENED, FINISHED
+	}
+	
+	private VotingState currentState = VotingState.CLOSED;
+	
 	//Received messages
 	private BigInteger encryptedVote = new BigInteger("1");
 	private BigInteger cPower = new BigInteger("1");
@@ -303,5 +309,26 @@ public class VoteReceiver {
 		System.out.println("Number of votes for candidate 3 = " + (Math.floor((intM / Math.pow(10, 2)) % 10)));
 		
 		return candidateVotes;
+	}
+	
+	public String getVotingState(){
+		switch (currentState){
+			case CLOSED:
+				return "closed";
+			case OPENED:
+				return "opened";
+			case FINISHED:
+				return "finished";
+		}
+		return "";
+	}
+	
+	public void setVotingState(String state){
+		if (state == "opened")
+			currentState = VotingState.OPENED;
+		if (state == "closed")
+			currentState = VotingState.CLOSED;
+		if (state == "finished")
+			currentState = VotingState.FINISHED;
 	}
 }

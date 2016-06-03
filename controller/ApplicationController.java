@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,8 @@ public class ApplicationController {
 	MenuButtonListener menuButtonListener = new MenuButtonListener();
 	
 	private VoteSender voteSender;
+	
+	public Color alertColour = new Color(255, 0, 84);
 	
 
 	public ApplicationController(JFrame mainWindow) {
@@ -144,38 +147,90 @@ public class ApplicationController {
 			String option = ((JButton) e.getSource()).getName();
 
 			switch (option) {
-			case "exit":
-				Runtime.getRuntime().exit(0);
-				break;
-			case "login":
-				viewController.login();
-				break;
-			case "loginconfirm":
-				String user = menuView.getUserInput();
-				String pass = menuView.getPassInput();
-				if (userManager.checkValidUser(user, pass)){
-					viewController.loggedIn(user);
-				}
-				else {
-					menuView.setMessage("Invalid username or password, please try again");
-				}
-				break;
-			case "registerconfirm":
-				System.out.println("Registering");
-				String newUser = menuView.getUserInput();
-				String newPass = menuView.getPassInput();
-				userManager.addUser(newUser, newPass);
-				viewController.registered();
-				break;
-			case "register":
-				viewController.register();
-				break;
-			case "admin":
-				break;
-			case "ok":
-				break;
+				case "exit":
+					Runtime.getRuntime().exit(0);
+					break;
+				case "login":
+					viewController.login();
+					break;
+				case "loginconfirm":
+					String user = menuView.getUserInput();
+					String pass = menuView.getPassInput();
+					if (!user.equals("") && !pass.equals("")){
+						if (userManager.checkValidUser(user, pass, false)){
+							viewController.loggedIn(user);
+							voteSender.activeUser = user;
+						}
+						else {
+							menuView.setMessage("Invalid username or password, please try again", Color.WHITE);
+						}
+					}
+					else 
+						menuView.setMessage("Username and password cannot be empty", Color.WHITE);
+					break;
+				case "registerconfirm":
+					System.out.println("Registering");
+					String newUser = menuView.getUserInput();
+					String newPass = menuView.getPassInput();
+					if (!newUser.equals("") && !newPass.equals("")){
+						userManager.addUser(newUser, newPass);
+						viewController.registered();
+					}
+					else {
+						menuView.setMessage("Username and password cannot be empty", Color.WHITE);
+					}
+					break;
+				case "register":
+					viewController.register();
+					break;
+				case "admin":
+					viewController.adminLogin();
+					break;
+				case "adminloginconfirm":
+					String adminUser = menuView.getAdminUserInput();
+					String adminPass = menuView.getAdminPassInput();
+					if (!adminUser.equals("") && !adminPass.equals("")){
+						if (userManager.checkValidUser(adminUser, adminPass, true)){
+							viewController.adminLoggedIn();
+							voteSender.activeUser = adminUser;
+							System.out.println("Valid admin credentials");
+						}
+						else {
+							menuView.setAdminMessage("Invalid username or password, please try again", Color.WHITE);
+						}
+					}
+					else 
+						menuView.setAdminMessage("Username and password cannot be empty", Color.WHITE);
+					break;
+				case "backadmin":
+					viewController.backFromAdmin();
+					break;
+				case "backlogin":
+					viewController.backFromLogin();
+					break;
+				case "backregister":
+					viewController.backFromRegister();
+					break;
+				case "logout":
+					voteSender.activeUser = "";
+					viewController.logout();
+					break;
+				case "openvoting":
+					VoteReceiver.getInstance().setVotingState("opened");
+					JOptionPane.showMessageDialog(null, "Voting has been opened");
+					viewController.votingOpened();
+					break;
+				case "vote":
+					String state = VoteReceiver.getInstance().getVotingState();
+					System.out.println("voting state is " + state);
+					if (state == "opened")
+						System.out.println("Voting is opened, go right ahead");
+					if (state == "closed")
+						System.out.println("Voting is closed, no voting for you");
+					if (state == "finished")
+						System.out.println("Voting is finished, thanks for your vote");
+					break;
 			}
-			
 		}
 		
 	}

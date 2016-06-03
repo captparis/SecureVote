@@ -19,46 +19,71 @@ public class UserManager {
 	
 	private HashMap<String, byte[]> voterPasswords;
 	private HashMap<String, byte[]> voterSalts;
+	
+	private HashMap<String, byte[]> adminPasswords;
+	private HashMap<String, byte[]> adminSalts;
 
 	public UserManager() {
 		voterPasswords = new HashMap<String, byte[]>();
 		voterSalts = new HashMap<String, byte[]>();
+		adminPasswords = new HashMap<String, byte[]>();
+		adminSalts = new HashMap<String, byte[]>();
+		
+		//Add initial admin account
+		//At this stage, admin accounts should be hardcoded
+		addAdmin("admin", "evote2016");
+		
+		//Add initial user for testing purposes
+		addUser("a", "a");
 	}
 	
 	public void addUser(String user, String pass){
 		try {
 			byte[] salt = generateSalt();
-			voterSalts.put(user, salt);
 			try {
 				voterPasswords.put(user, encryptPassword(pass, salt));
+				voterSalts.put(user, salt);
 			} catch (InvalidKeySpecException e) {
 				System.out.println("Unable to encrypt password");
 			}
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("Unable to generate salt");
 		}
-		
 	}
 	
-	public boolean checkValidUser(String user, String pass){
-		/*
-      Set set = voters.entrySet();
-      // Get an iterator
-      Iterator i = (Iterator) set.iterator();
-      // Display elements
-      while(i.hasNext()) {
-         Map.Entry me = (Map.Entry)i.next();
-         if (user.equals(me.getKey()) && pass.equals(me.getValue())){
-        	 return true;
-         }
-      }
-      return false;
-      */
+	//TODO Code repetition, can improve
+	public void addAdmin(String user, String pass){
+		try {
+			byte[] salt = generateSalt();
+			adminSalts.put(user, salt);
+			try {
+				adminPasswords.put(user, encryptPassword(pass, salt));
+			} catch (InvalidKeySpecException e) {
+				System.out.println("Unable to encrypt password");
+			}
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("Unable to generate salt");
+		}
+	}
+	
+	public boolean checkValidUser(String user, String pass, boolean admin){
 		
 		boolean valid = false;
 		
+		//Try to match password by re-encrypting given password
 		try {
-			valid = validPassword(pass, voterPasswords.get(user), voterSalts.get(user));
+			if (!admin) {
+				byte[] storedPass = voterPasswords.get(user);
+				byte[] storedSalt = voterSalts.get(user);
+				if (storedPass != null && storedSalt != null)
+					valid = validPassword(pass, storedPass, storedSalt);
+			}
+			else {
+				byte[] storedPass = adminPasswords.get(user);
+				byte[] storedSalt = adminSalts.get(user);
+				if (storedPass != null && storedSalt != null)
+					valid = validPassword(pass, storedPass, storedSalt);
+			}
 		} catch (NoSuchAlgorithmException e) {
 			System.out.print("Could not find encryption algorithm");
 		} catch (InvalidKeySpecException e) {
@@ -69,18 +94,13 @@ public class UserManager {
 	}
 	
 	public boolean validPassword(String attemptedPassword, byte[] encryptedPassword, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// Encrypt the clear-text password using the same salt that was used to
-		// encrypt the original password
+		// Encrypt given password using same salt that was used to encrypt registration password
 		byte[] encryptedAttemptedPassword = encryptPassword(attemptedPassword, salt);
-		// Authentication succeeds if encrypted password that the user entered
-		// is equal to the stored hash
 		return Arrays.equals(encryptedPassword, encryptedAttemptedPassword);
 	}
 
 	public byte[] generateSalt() throws NoSuchAlgorithmException {
-		// VERY important to use SecureRandom instead of just Random
 		SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-		// Generate a 8 byte (64 bit) salt as recommended by RSA PKCS5
 		byte[] salt = new byte[8];
 		random.nextBytes(salt);
 		return salt;
