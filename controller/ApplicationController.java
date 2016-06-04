@@ -45,7 +45,7 @@ public class ApplicationController {
 	public ApplicationController(JFrame mainWindow) {
 		
 		voteView = new VoteView(voteListener, voteButtonListener);
-		menuView = new MenuView(menuButtonListener);
+		menuView = new MenuView(menuButtonListener, voteView);
 		
 		viewController = new ViewController(menuView, voteView, mainWindow);
 		userManager = new UserManager();
@@ -70,24 +70,37 @@ public class ApplicationController {
 		@Override
 		public void itemStateChanged(ItemEvent e){
 			JCheckBox source = (JCheckBox) e.getSource();
+			String selectionName = ((Component) e.getSource()).getName();
+			int selectionInt = Integer.parseInt(selectionName);
 			
-			if (source.isSelected()){
-				selectionCounter ++;
-				//if (selectionCounter > selectionMax){
-					//selectionCounter --;
-					//JOptionPane.showMessageDialog(null, "Only one candidate can be selected. Please deselect previous candidate and try again.");
-				//}
-				//else {
+			System.out.println("selection counter is currently " + selectionCounter);
+			
+			if (source.isSelected()){ //candidate selected
+				if (selectionCounter >= 2){
+					JOptionPane.showMessageDialog(null, "You may only select a maximum of 2 candidates. Please deselect a candidate to choose another");
+				}
+				else {
 					
-					String selectionName = ((Component) e.getSource()).getName();
 					if (selection1 == 0)
-						selection1 = Integer.parseInt(selectionName);
+						selection1 = selectionInt;
 					else 
-						selection2 = Integer.parseInt(selectionName);
-				//}
+						selection2 = selectionInt;
+				}
+				selectionCounter ++;
+				System.out.println("selection counter is now " + selectionCounter);
 			}
-			else {
+			else { //candidate deselected
 				selectionCounter--;
+			
+				if (selectionInt == selection1){
+					selection1 = selection2;
+					selection2 = 0;
+					System.out.println("First selection deselected, selection 1 is now " + selection1 + " and selection 2 is now " + selection2);
+				} else if (selectionInt == selection2){
+					selection2 = 0;
+					System.out.println("Second selection deselected, selection 1 is now " + selection1 + " and selection 2 is now " + selection2);
+				}
+				System.out.println("selection counter is now " + selectionCounter);
 			}
 		}
 	
@@ -109,15 +122,15 @@ public class ApplicationController {
 				else {
 					voteSender.sendVote(selection1, selection2);
 					voteView.reduceVoters();
-					selection1 = 0;
-					selection2 = 0;
+					//selection1 = 0;
+					//selection2 = 0;
 				}
 				break;
 			case "exit":
 				Runtime.getRuntime().exit(0);
 				break;
 			case "open":
-				int temp = voteView.getVotersNum();
+				/*int temp = voteView.getVotersNum();
 				if (temp != 0)	{
 					VoteReceiver.getInstance().setVoters(temp);
 					VoteReceiver.getInstance().createKeys();
@@ -126,7 +139,7 @@ public class ApplicationController {
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Please enter a valid number of voters");
-				}
+				}*/
 				break;
 			case "tally":
 				List<Integer> candidateVotes = VoteReceiver.getInstance().tallyVotes();
@@ -215,18 +228,43 @@ public class ApplicationController {
 					voteSender.activeUser = "";
 					viewController.logout();
 					break;
+				case "openregistration":
+					int temp = menuView.getVoterCountInput();
+					if (temp != 0)	{
+						VoteReceiver.getInstance().setVoters(temp);
+						VoteReceiver.getInstance().setRegistrationState("opened");
+						JOptionPane.showMessageDialog(null, "Registration has been opened");
+						viewController.adminOptionsUpdate();
+					}
+					else 
+						JOptionPane.showMessageDialog(null, "Please enter number of voters before opening registration");
+					break;
 				case "openvoting":
 					VoteReceiver.getInstance().setVotingState("opened");
-					JOptionPane.showMessageDialog(null, "Voting has been opened");
-					viewController.votingOpened();
+					VoteReceiver.getInstance().setRegistrationState("finished");
+					JOptionPane.showMessageDialog(null, "Voting has been opened, registration automatically closed");
+					viewController.adminOptionsUpdate();
+					break;
+				case "closevoting":
+					VoteReceiver.getInstance().setVotingState("finished");
+					JOptionPane.showMessageDialog(null, "Voting has been closed");
+					viewController.adminOptionsUpdate();
+					break;
+				case "tallyvotes":
 					break;
 				case "vote":
 					String state = VoteReceiver.getInstance().getVotingState();
 					System.out.println("voting state is " + state);
 					if (state == "opened")
-						System.out.println("Voting is opened, go right ahead");
+						VoteReceiver.getInstance().createKeys();
+						voteSender.requestPublicKeys();
+						voteView.setVotersNum(VoteReceiver.getInstance().getVoters());
+						viewController.moveToVote();
 					if (state == "closed")
-						System.out.println("Voting is closed, no voting for you");
+						VoteReceiver.getInstance().createKeys();
+						voteSender.requestPublicKeys();
+						voteView.setVotersNum(VoteReceiver.getInstance().getVoters());
+						viewController.moveToVote();
 					if (state == "finished")
 						System.out.println("Voting is finished, thanks for your vote");
 					break;

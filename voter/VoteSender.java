@@ -13,7 +13,7 @@ public class VoteSender {
 	private int encryptedVote;
 	private long random;
 	
-	private long[] publicKeys;
+	private BigInteger[] publicKeys;
 	
 	private VoteReceiver voteReceiver;
 	
@@ -39,18 +39,18 @@ public class VoteSender {
 		System.out.println("Encrypting Vote, candidate is " + vote);
 		Random rand = new Random();
 		random = rand.nextInt(1000) + 1;
-		while(getGcd(random, publicKeys[0]) != 1){
+		while(getGcd(random, publicKeys[0].intValue()) != 1){
 			random = rand.nextInt(10000) + 1;
 		}
 		System.out.println("");
 		System.out.println("Public key 1 is " + publicKeys[0] + " and public key 2 is " + publicKeys[1]);
-		encrypted = BigInteger.valueOf(publicKeys[1]);
+		encrypted = publicKeys[1];
 		encrypted = encrypted.pow(vote);
 		randomPower = BigInteger.valueOf(random);
-		randomPower = randomPower.pow((int) publicKeys[0]);
+		randomPower = randomPower.pow(publicKeys[0].intValue());
 		encrypted = encrypted.multiply(randomPower);
 		
-		nSquare = BigInteger.valueOf(publicKeys[0] * publicKeys[0]);
+		nSquare = publicKeys[0].multiply(publicKeys[0]);
 		
 		encrypted = encrypted.remainder(nSquare);
 		
@@ -73,6 +73,7 @@ public class VoteSender {
 		//Check is a second candidate was selected
 		if (candidate2 != 0)
 			candidateValue = candidateValue + ((int) Math.pow(10, (candidate2 - 1)));
+		System.out.println("Sending candidate value of " + candidateValue);
 		encryptVote(candidateValue);
 	}
 	

@@ -17,6 +17,8 @@ import javax.swing.*;
 
 public class MenuView extends JPanel {
 	
+	//private VoteView voteView;
+	
 	//JPanels
 	private JPanel headerPanel;
 	private JPanel headerWest;
@@ -58,6 +60,7 @@ public class MenuView extends JPanel {
 	private JButton login;
 	private JButton register;
 	
+	private JButton openRegistration;
 	private JButton openVoting;
 	private JButton closeVoting;
 	private JButton tallyVotes;
@@ -92,7 +95,7 @@ public class MenuView extends JPanel {
 	CardLayout adminLayout;
 	
 
-	public MenuView(ActionListener menuButtonListener) {
+	public MenuView(ActionListener menuButtonListener, VoteView voteView) {
 		//JPanel setup
 		headerPanel = new JPanel();
 		headerWest = new JPanel();
@@ -212,6 +215,7 @@ public class MenuView extends JPanel {
 		openVoting = new JButton("Open Voting");
 		closeVoting = new JButton("Close Voting");
 		tallyVotes = new JButton("Tally Votes");
+		openRegistration = new JButton("Open Registration");
 		
 		backAdmin.setName("backadmin");
 		backLogin.setName("backlogin");
@@ -228,6 +232,9 @@ public class MenuView extends JPanel {
 		logout.setName("logout");
 		adminLogin.setName("adminloginconfirm");
 		openVoting.setName("openvoting");
+		openRegistration.setName("openregistration");
+		closeVoting.setName("closevoting");
+		tallyVotes.setName("tallyvotes");
 		
 		register.setAlignmentX(Component.CENTER_ALIGNMENT);
 		login.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -236,6 +243,7 @@ public class MenuView extends JPanel {
 		openVoting.setAlignmentX(Component.CENTER_ALIGNMENT);
 		closeVoting.setAlignmentX(Component.CENTER_ALIGNMENT);
 		tallyVotes.setAlignmentX(Component.CENTER_ALIGNMENT);
+		openRegistration.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		backAdmin.addActionListener(menuButtonListener);
 		backLogin.addActionListener(menuButtonListener);
@@ -251,6 +259,9 @@ public class MenuView extends JPanel {
 		logout.addActionListener(menuButtonListener);
 		vote.addActionListener(menuButtonListener);
 		openVoting.addActionListener(menuButtonListener);
+		openRegistration.addActionListener(menuButtonListener);
+		closeVoting.addActionListener(menuButtonListener);
+		tallyVotes.addActionListener(menuButtonListener);
 		
 		
 		//JLabel setup
@@ -359,6 +370,8 @@ public class MenuView extends JPanel {
 		
 		adminSettings.add(voterCountPanel);
 		adminSettings.add(Box.createRigidArea(new Dimension(1,20)));
+		adminSettings.add(openRegistration);
+		adminSettings.add(Box.createRigidArea(new Dimension(1,20)));
 		adminSettings.add(openVoting);
 		adminSettings.add(Box.createRigidArea(new Dimension(1,20)));
 		adminSettings.add(closeVoting);
@@ -392,6 +405,7 @@ public class MenuView extends JPanel {
 		
 		mainCards.add(mainPanel, "home");
 		mainCards.add(adminPanel, "admin");
+		mainCards.add(voteView, "vote");
 		
 		this.add(headerPanel);
 		this.add(mainCards);
@@ -412,6 +426,11 @@ public class MenuView extends JPanel {
 			closeVoting.setEnabled(enabled);
 		else if (element == "tallyvotes")
 			tallyVotes.setEnabled(enabled);
+		else if (element == "openregistration")
+			openRegistration.setEnabled(enabled);
+		else if (element == "register")
+			register.setEnabled(enabled);
+		
 	}
 	
 	//Used to completely remove buttons
@@ -466,6 +485,16 @@ public class MenuView extends JPanel {
 	
 	public String getAdminUserInput(){
 		return adminUserField.getText();
+	}
+	
+	public int getVoterCountInput(){
+		String voters = voterCount.getText();
+		if (!voters.trim().isEmpty()){
+			int temp = Integer.parseInt(voters);
+			System.out.println("Input voter count is " + temp);
+			return temp;
+		}
+		return 0;
 	}
 	
 	@SuppressWarnings("deprecation")
