@@ -9,8 +9,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.*;
+
+import main.Main;
 
 //Contains views for menu, including login, register and admin settings
 //Maintains constant header and footer areas
@@ -226,7 +229,8 @@ public class MenuView extends JPanel {
 		adminLayout = (CardLayout) adminCards.getLayout();
 		
 		//Image setup
-		ImageIcon exitIcon = new ImageIcon("bin/images/exit2.png");
+		URL url = Main.class.getResource("/images/exit2.png");
+		ImageIcon exitIcon = new ImageIcon(url);
         Image exitImage = exitIcon.getImage() ;  
         exitImage = exitImage.getScaledInstance( 15, 15,  java.awt.Image.SCALE_SMOOTH ) ;
         exitIcon.setImage(exitImage);
@@ -307,7 +311,8 @@ public class MenuView extends JPanel {
 		tallyTitle = new JLabel("Calculating vote tally");
 		tallyTitle.setForeground(Color.WHITE);
 		
-		ImageIcon logoImg = new ImageIcon("bin/images/logo.png");
+		url = Main.class.getResource("/images/logo.png");
+		ImageIcon logoImg = new ImageIcon(url);
 		logo = new JLabel();
 		logo.setIcon(logoImg);
 		logo.setAlignmentX(Component.CENTER_ALIGNMENT);
