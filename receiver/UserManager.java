@@ -25,9 +25,27 @@ public class UserManager {
 	private HashMap<String, Boolean> voterVoted;
 	
 	//List of hardcoded names and codes for eligible voters for this election
+	//Determines how many people will be voting
 	//This is based on official listings of voters
 	//A unique ID string is given to each candidate through other means which allows them to register
-	private HashMap<String, HashMap<String, String>> eligibleVoters; 
+	private static HashMap<String, String[]> eligibleVoters; 
+	static {
+		eligibleVoters = new HashMap<String, String[]>();
+		String[] names1 = {"Jacob", "Paris"};
+		eligibleVoters.put("190199", names1);
+		String[] names2 = {"John", "Lewis"};
+		eligibleVoters.put("450456", names2);
+		String[] names3 = {"Sally", "Jones"};
+		eligibleVoters.put("348540", names3);
+		String[] names4 = {"Leigh", "Friday"};
+		eligibleVoters.put("982238", names4);
+		String[] names5 = {"Olivia", "Schwarz"};
+		eligibleVoters.put("934580", names5);
+		String[] names6 = {"Samantha", "Greenland"};
+		eligibleVoters.put("450456", names6);
+		String[] names7 = {"John", "James"};
+		eligibleVoters.put("450456", names7);
+	}
 	
 	private HashMap<String, byte[]> adminPasswords;
 	private HashMap<String, byte[]> adminSalts;
@@ -150,16 +168,9 @@ public class UserManager {
 	
 	 public byte[] encryptPassword(String password, byte[] salt)
 	    throws NoSuchAlgorithmException, InvalidKeySpecException {
-	   // PBKDF2 with SHA-1 as the hashing algorithm. Note that the NIST
-	   // specifically names SHA-1 as an acceptable hashing algorithm for PBKDF2
+	   // PBKDF2 with SHA-1 as the hashing algorithm
 	   String algorithm = "PBKDF2WithHmacSHA1";
-	   // SHA-1 generates 160 bit hashes, so that's what makes sense here
 	   int derivedKeyLength = 160;
-	   // Pick an iteration count that works for you. The NIST recommends at
-	   // least 1,000 iterations:
-	   // http://csrc.nist.gov/publications/nistpubs/800-132/nist-sp800-132.pdf
-	   // iOS 4.x reportedly uses 10,000:
-	   // http://blog.crackpassword.com/2010/09/smartphone-forensics-cracking-blackberry-backup-passwords/
 	   int iterations = 20000;
 	   KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, derivedKeyLength);
 	   SecretKeyFactory f = SecretKeyFactory.getInstance(algorithm);

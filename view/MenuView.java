@@ -81,6 +81,7 @@ public class MenuView extends JPanel {
 	private JLabel adminUser;
 	private JLabel adminPass;
 	private JLabel numberOfVoters;
+	private JLabel tallyTitle;
 	
 	//JTextFields
 	private JTextField userField;
@@ -275,6 +276,9 @@ public class MenuView extends JPanel {
 		//JLabel setup
 		username = new JLabel("Not logged in");
 		username.setForeground(Color.WHITE);
+		
+		tallyTitle = new JLabel("Calculating vote tally");
+		tallyTitle.setForeground(Color.WHITE);
 		
 		ImageIcon logoImg = new ImageIcon("bin/images/logo.png");
 		logo = new JLabel();
@@ -537,6 +541,13 @@ public class MenuView extends JPanel {
 	
 	public void setUsername(String userText){
 		username.setText(userText);
+	}
+	
+	public void clearLogins(){
+		userField.setText("");
+		passField.setText("");
+		adminUserField.setText("");
+		adminPassField.setText("");
 	}
 
 }

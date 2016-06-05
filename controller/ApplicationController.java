@@ -267,6 +267,8 @@ public class ApplicationController {
 					viewController.adminOptionsUpdate();
 					break;
 				case "tallyvotes":
+					List<Integer> candidateVotes = VoteReceiver.getInstance().tallyVotes();
+					voteView.setVoteCount(candidateVotes);
 					viewController.adminTally();
 					break;
 				case "backtally":

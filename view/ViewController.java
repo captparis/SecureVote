@@ -117,6 +117,7 @@ public class ViewController {
 	
 	public void loggedIn(String username){
 		setVoterOptions();
+		menuView.clearLogins();
 		menuView.setUsername(username);
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loggedin");
 		menuView.addRemoveElement("admin", true);
@@ -158,6 +159,7 @@ public class ViewController {
 	public void adminLoggedIn(){
 		//menuView.addRemoveElement("backlogin", true);
 		setAdminOptions();
+		menuView.clearLogins();
 		menuView.setUsername("Admin");
 		menuView.setAdminMessage("Admin Panel", Color.WHITE);
 		menuView.addRemoveElement("adminlogin", false);
@@ -169,6 +171,7 @@ public class ViewController {
 		menuView.adminLayout.show(menuView.adminCards, "tally");
 		menuView.addRemoveElement("backadmin", false);
 		menuView.addRemoveElement("backtally", true);
+		menuView.setAdminMessage("Tallying votes, please wait...", Color.WHITE);
 		mainWindow.repaint();
 	}
 	

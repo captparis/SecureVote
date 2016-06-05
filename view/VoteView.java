@@ -154,7 +154,12 @@ public class VoteView extends JPanel {
 		voteCount5.setForeground(Color.WHITE);
 		voteCount6.setForeground(Color.WHITE);
 		voteCount7.setForeground(Color.WHITE);
-
+		
+		voteCount1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		voteCount2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		voteCount3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		voteCount4.setAlignmentX(Component.CENTER_ALIGNMENT);
+		voteCount5.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		//Checkbox setup
 		check1 = new JCheckBox("Adam Bandt");
@@ -210,7 +215,7 @@ public class VoteView extends JPanel {
 		buttonPanel.add(vote);
 		//buttonPanel.add(exit);
 		buttonPanel.add(back);
-		buttonPanel.add(tally);
+		//buttonPanel.add(tally);
 		
 		
 		votedPanel.add(thankYou);
@@ -225,7 +230,6 @@ public class VoteView extends JPanel {
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,50)));
 		verticalContainer.add(buttonPanel);
 		verticalContainer.add(Box.createRigidArea(new Dimension(50,50)));
-		verticalContainer.add(votersLeft);
 		verticalContainer.add(voteCount1);
 		verticalContainer.add(voteCount2);
 		verticalContainer.add(voteCount3);
