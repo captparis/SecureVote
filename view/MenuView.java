@@ -645,6 +645,16 @@ public class MenuView extends JPanel {
 		adminPassField.setText("");
 	}
 	
+	public void clearRegistration(){
+		regUserField.setText("");
+		regPassField.setText("");
+		firstNameField.setText("");
+		lastNameField.setText("");
+		idField.setText("");
+	}
+	
+	
+	
 	//Adds and removes fields to login panel to allow it to be used for registration
 	public void setLoginRegisterPanel(boolean isLogin){
 		if (isLogin){

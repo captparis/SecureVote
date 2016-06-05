@@ -138,6 +138,7 @@ public class ViewController {
 	}
 	
 	public void registered(){
+		menuView.clearRegistration();
 		setVoterOptions();
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loginregister");
 		menuView.addRemoveElement("admin", true);
@@ -206,6 +207,7 @@ public class ViewController {
 	}
 	
 	public void backFromRegister(){
+		menuView.clearRegistration();
 		setVoterOptions();
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loginregister");
 		menuView.addRemoveElement("admin", true);
@@ -217,6 +219,7 @@ public class ViewController {
 	}
 	
 	public void backFromVote(){
+		voteView.clearVotes();
 		menuView.mainLayout.show(menuView.mainCards, "home");
 		menuView.addRemoveElement("admin", true);
 		setMessage();

@@ -28,36 +28,10 @@ public class UserManager {
 	//Determines how many people will be voting
 	//This is based on official listings of voters
 	//A unique ID string is given to each candidate through other means which allows them to register
-	private static HashMap<String, String[]> eligibleVoters; 
-	static {
-		eligibleVoters = new HashMap<String, String[]>();
-		String[] names1 = {"Jacob", "Paris"};
-		eligibleVoters.put("190199", names1);
-		String[] names2 = {"John", "Lewis"};
-		eligibleVoters.put("450456", names2);
-		String[] names3 = {"Sally", "Jones"};
-		eligibleVoters.put("348540", names3);
-		String[] names4 = {"Leigh", "Friday"};
-		eligibleVoters.put("982238", names4);
-		String[] names5 = {"Olivia", "Schwarz"};
-		eligibleVoters.put("934580", names5);
-		String[] names6 = {"Samantha", "Greenland"};
-		eligibleVoters.put("450456", names6);
-		String[] names7 = {"John", "James"};
-		eligibleVoters.put("783459", names7);
-	}
-	
-	private static HashMap<String, Boolean> eligibleRegistered;
-	static {
-		eligibleRegistered = new HashMap<String, Boolean>();
-		eligibleRegistered.put("190199", false);
-		eligibleRegistered.put("450456", false);
-		eligibleRegistered.put("348540", false);
-		eligibleRegistered.put("982238", false);
-		eligibleRegistered.put("934580", false);
-		eligibleRegistered.put("450456", false);
-		eligibleRegistered.put("783459", false);
-	}
+	private HashMap<String, byte[]> eligibleFirstNames;
+	private HashMap<String, byte[]> eligibleLastNames;
+	private HashMap<String, byte[]> eligibleSalts;
+	private HashMap<String, Boolean> eligibleRegistered;
 	
 	private HashMap<String, byte[]> adminPasswords;
 	private HashMap<String, byte[]> adminSalts;
@@ -73,12 +47,27 @@ public class UserManager {
 		adminPasswords = new HashMap<String, byte[]>();
 		adminSalts = new HashMap<String, byte[]>();
 		
+		eligibleFirstNames = new HashMap<String, byte[]>();
+		eligibleLastNames = new HashMap<String, byte[]>();
+		eligibleSalts = new HashMap<String, byte[]>();
+		eligibleRegistered = new HashMap<String, Boolean>();
+		
 		//Add initial admin account
 		//At this stage, admin accounts should be hardcoded
 		addAdmin("admin", "evote2016");
 		
 		//Add initial user for testing purposes
 		addUser("a", "a");
+		addUser("b", "b");
+		
+		//Add eligible users
+		addEligible("Jacob", "Paris", "190199");
+		addEligible("John", "Lewis", "450456");
+		addEligible("Sally", "Jones", "348540");
+		addEligible("Leigh", "Friday", "982238");
+		addEligible("Olivia", "Schwarz", "934580");
+		addEligible("Samantha", "Greenland", "450456");
+		addEligible("John", "James", "783459");
 	}
 	
 	public static UserManager getInstance()
@@ -99,15 +88,19 @@ public class UserManager {
 	
 	//Checks first name, last name and ID for a match in the eligible voters, also checks if user has already registered
 	public boolean checkEligible(String first, String last, String id){
-		if (eligibleVoters.get(id) != null){
+		if (eligibleSalts.get(id) != null){
 			System.out.println("Eligible voter retrieval for id " + id + " has been found");
-			String[] names = eligibleVoters.get(id);
-			if (names[0].equals(first) && names[1].equals(last) && !eligibleRegistered.get(id)){
+			boolean isValidFirst = false;
+			boolean isValidLast = false;
+			try {
+				isValidFirst = validPassword(first, eligibleFirstNames.get(id), eligibleSalts.get(id));
+				isValidLast = validPassword(last, eligibleLastNames.get(id), eligibleSalts.get(id));
+			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+				System.out.println("Could not check is valid first and last names");
+			}
+			if (isValidFirst && isValidLast && !eligibleRegistered.get(id)){
 				return true;
 			}
-			System.out.println("Stored name " + names[0] + " does not match input name " + first + " OR");
-			System.out.println("Stored name " + names[1] + " does not match input name " + last + " OR");
-			System.out.println("Eligible registered is set to true: " + eligibleRegistered.get(id));
 		}
 		return false;
 	}
@@ -125,6 +118,22 @@ public class UserManager {
 				voterVoted.put(user, false);
 			} catch (InvalidKeySpecException e) {
 				System.out.println("Unable to encrypt password");
+			}
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("Unable to generate salt");
+		}
+	}
+	
+	public void addEligible(String first, String last, String id){
+		try {
+			byte[] salt = generateSalt();
+			try {
+				eligibleFirstNames.put(id, encryptPassword(first, salt));
+				eligibleLastNames.put(id, encryptPassword(last, salt));
+				eligibleSalts.put(id, salt);
+				eligibleRegistered.put(id, false);
+			} catch (InvalidKeySpecException e) {
+			System.out.println("Unable to encrypt password");
 			}
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("Unable to generate salt");

@@ -257,6 +257,7 @@ public class ApplicationController {
 					viewController.adminOptionsUpdate();
 					break;
 				case "openvoting":
+					VoteReceiver.getInstance().createKeys();
 					VoteReceiver.getInstance().setVotingState("opened");
 					VoteReceiver.getInstance().setRegistrationState("finished");
 					JOptionPane.showMessageDialog(null, "Voting has been opened, registration automatically closed");
@@ -283,11 +284,9 @@ public class ApplicationController {
 					}
 					else if (state == "opened"){
 						menuView.setMessage("Opening secure voting, please wait...", Color.WHITE);
-
 						Timer openVotingTimer = new Timer(5, new ActionListener(){
 							@Override
 							public void actionPerformed (ActionEvent e){
-								VoteReceiver.getInstance().createKeys();
 								voteSender.requestPublicKeys();
 								voteView.setVotersNum(VoteReceiver.getInstance().getVoters());
 								viewController.moveToVote();

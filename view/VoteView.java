@@ -280,5 +280,14 @@ public class VoteView extends JPanel {
 
 		
 	}
+	
+	public void clearVotes(){
+		check1.setSelected(false);
+		check2.setSelected(false);
+		check3.setSelected(false);
+		check4.setSelected(false);
+		check5.setSelected(false);
+		
+	}
 
 }

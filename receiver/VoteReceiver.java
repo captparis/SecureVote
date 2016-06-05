@@ -352,6 +352,7 @@ public class VoteReceiver {
 		BigInteger m = L.remainder(n);
 		int intM = m.intValue();
 		System.out.println("Decrypted tally is " + m);
+		
 		candidateVotes.add((int) Math.floor((intM / Math.pow(10, 0)) % 10));
 		candidateVotes.add((int) Math.floor((intM / Math.pow(10, 1)) % 10));
 		candidateVotes.add((int) Math.floor((intM / Math.pow(10, 2)) % 10));
