@@ -63,10 +63,11 @@ public class VoteReceiver {
 	//Other
 	private Random rand = new Random();
 	private CloudVoteCalculator cloud;
-	private int votersNum = 5;
+	//Hardcoded number for total eligible voters and candidates
+	private int votersNum = 7;
 	private int candidatesNum = 5;
 	
-	// singleton
+	//Singleton
 	private static VoteReceiver instance;
 	
 	private VoteReceiver(){

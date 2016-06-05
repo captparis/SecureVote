@@ -32,6 +32,11 @@ public class MenuView extends JPanel {
 	private JPanel footerEast;
 	private JPanel loginUserPanel;
 	private JPanel loginPassPanel;
+	private JPanel registerFirstPanel;
+	private JPanel registerLastPanel;
+	private JPanel registerIdPanel;
+	private JPanel registerUserPanel;
+	private JPanel registerPassPanel;
 	private JPanel adminLoginPanel;
 	private JPanel adminUserPanel;
 	private JPanel adminPassPanel;
@@ -39,7 +44,6 @@ public class MenuView extends JPanel {
 	private JPanel adminPanel;
 	private JPanel adminSettings;
 	private JPanel adminTally;
-	private JPanel voterCountPanel;
 	
 	public JPanel mainCards;
 	public JPanel loginRegisterCards;
@@ -83,14 +87,24 @@ public class MenuView extends JPanel {
 	private JLabel numberOfVoters;
 	private JLabel tallyTitle;
 	
+	private JLabel regUser;
+	private JLabel regPass;
+	private JLabel firstName;
+	private JLabel lastName;
+	private JLabel id;
+	
 	//JTextFields
 	private JTextField userField;
 	private JPasswordField passField;
+	
+	private JTextField regUserField;
+	private JTextField regPassField;
+	private JTextField firstNameField;
+	private JTextField lastNameField;
+	private JTextField idField;
 
 	private JTextField adminUserField;
 	private JPasswordField adminPassField;
-	
-	private JTextField voterCount;
 	
 	//Layouts
 	CardLayout mainLayout;
@@ -108,6 +122,11 @@ public class MenuView extends JPanel {
 		loginPanel = new JPanel();
 		loginUserPanel = new JPanel();
 		loginPassPanel = new JPanel();
+		registerUserPanel = new JPanel();
+		registerPassPanel = new JPanel();
+		registerFirstPanel = new JPanel();
+		registerLastPanel = new JPanel();
+		registerIdPanel = new JPanel();
 		registerPanel = new JPanel();
 		footerPanel = new JPanel();
 		footerEast = new JPanel();
@@ -121,7 +140,6 @@ public class MenuView extends JPanel {
 		adminPassPanel = new JPanel();
 		adminCards = new JPanel();
 		adminSettings = new JPanel();
-		voterCountPanel = new JPanel();
 		adminTally = new JPanel();
 		
 		this.setPreferredSize(new Dimension (1024, 640));
@@ -144,20 +162,25 @@ public class MenuView extends JPanel {
 		adminPanel.setPreferredSize(new Dimension(1024, 540));
 		adminSettings.setLayout(new BoxLayout(adminSettings, BoxLayout.Y_AXIS));
 		
-		voterCountPanel.setPreferredSize(new Dimension(1024, 100));
 		
 		loggedInPanel.setPreferredSize(new Dimension(1024, 90));
 		loggedInPanel.setLayout(new BoxLayout(loggedInPanel, BoxLayout.Y_AXIS));
 		
 		loginRegisterPanel.setLayout(new BoxLayout(loginRegisterPanel, BoxLayout.Y_AXIS));
 		
-		loginPanel.setPreferredSize(new Dimension(1024, 90));
+		loginPanel.setPreferredSize(new Dimension(1024, 180));
 		loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
+		
+		registerPanel.setPreferredSize(new Dimension(1024, 180));
+		registerPanel.setLayout(new BoxLayout(registerPanel, BoxLayout.Y_AXIS));
 		
 		loginUserPanel.setSize(new Dimension(1024, 40));
 		loginPassPanel.setSize(new Dimension(1024, 40));
 		adminUserPanel.setSize(new Dimension(1024, 40));
 		adminPassPanel.setSize(new Dimension(1024, 40));
+		registerFirstPanel.setSize(new Dimension(1024, 40));
+		registerLastPanel.setSize(new Dimension(1024, 40));
+		registerIdPanel.setSize(new Dimension(1024, 40));
 		
 		footerPanel.setPreferredSize(new Dimension(1024, 40));
 		footerWest.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -173,6 +196,11 @@ public class MenuView extends JPanel {
 		loginPanel.setOpaque(false);
 		loginUserPanel.setOpaque(false);
 		loginPassPanel.setOpaque(false);
+		registerUserPanel.setOpaque(false);
+		registerPassPanel.setOpaque(false);
+		registerFirstPanel.setOpaque(false);
+		registerLastPanel.setOpaque(false);
+		registerIdPanel.setOpaque(false);
 		registerPanel.setOpaque(false);
 		footerPanel.setOpaque(false);
 		footerEast.setOpaque(false);
@@ -187,7 +215,6 @@ public class MenuView extends JPanel {
 		adminPassPanel.setOpaque(false);
 		adminCards.setOpaque(false);
 		adminSettings.setOpaque(false);
-		voterCountPanel.setOpaque(false);
 		adminTally.setOpaque(false);
 		
 		//CardLayout setup
@@ -317,20 +344,47 @@ public class MenuView extends JPanel {
 		numberOfVoters.setForeground(Color.WHITE);
 		numberOfVoters.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		
+		regUser = new JLabel("Username: ");
+		regPass = new JLabel("Password: ");
+		regUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+		regPass.setAlignmentX(Component.CENTER_ALIGNMENT);
+		regUser.setForeground(Color.WHITE);
+		regPass.setForeground(Color.WHITE);
+		firstName = new JLabel("First name: ");
+		firstName.setForeground(Color.WHITE);
+		firstName.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lastName = new JLabel("Last name: ");
+		lastName.setForeground(Color.WHITE);
+		lastName.setAlignmentX(Component.CENTER_ALIGNMENT);
+		id = new JLabel("ID number: ");
+		id.setForeground(Color.WHITE);
+		id.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		
+		
 		//JTextFieldSetup
 		userField = new JTextField();
 		passField = new JPasswordField();
+		regUserField = new JTextField();
+		regPassField = new JPasswordField();
+		firstNameField = new JTextField();
+		lastNameField = new JTextField();
+		idField = new JTextField();
+		regUserField.setColumns(10);
+		regPassField.setColumns(10);
 		userField.setColumns(10);
 		passField.setColumns(10);
+		firstNameField.setColumns(10);
+		lastNameField.setColumns(10);
+		idField.setColumns(10);
+		
 		
 		adminUserField = new JTextField();
 		adminPassField = new JPasswordField();
 		adminUserField.setColumns(10);
 		adminPassField.setColumns(10);
 		
-		voterCount = new JTextField();
-		voterCount.setColumns(10);
-		voterCount.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		//Build Panels
 		headerWest.add(username);
@@ -362,6 +416,36 @@ public class MenuView extends JPanel {
 		loginPanel.add(loginPassPanel);
 		loginPanel.add(Box.createRigidArea(new Dimension(1,200)));
 		
+		registerUserPanel.add(regUser);
+		registerUserPanel.add(Box.createRigidArea(new Dimension(10,1)));
+		registerUserPanel.add(regUserField);
+		
+		registerPassPanel.add(regPass);
+		registerPassPanel.add(Box.createRigidArea(new Dimension(10,1)));
+		registerPassPanel.add(regPassField);
+		
+		registerFirstPanel.add(firstName);
+		registerFirstPanel.add(Box.createRigidArea(new Dimension(10,1)));
+		registerFirstPanel.add(firstNameField);
+		
+		registerLastPanel.add(lastName);
+		registerLastPanel.add(Box.createRigidArea(new Dimension(10,1)));
+		registerLastPanel.add(lastNameField);
+		
+		registerIdPanel.add(id);
+		registerIdPanel.add(Box.createRigidArea(new Dimension(10,1)));
+		registerIdPanel.add(idField);
+		
+		registerPanel.add(registerFirstPanel);
+		registerPanel.add(Box.createRigidArea(new Dimension(1,5)));
+		registerPanel.add(registerLastPanel);
+		registerPanel.add(Box.createRigidArea(new Dimension(1,5)));
+		registerPanel.add(registerIdPanel);
+		registerPanel.add(Box.createRigidArea(new Dimension(1,5)));
+		registerPanel.add(registerUserPanel);
+		registerPanel.add(Box.createRigidArea(new Dimension(1,5)));
+		registerPanel.add(registerPassPanel);
+		
 		loggedInPanel.add(vote);
 		loginPanel.add(Box.createRigidArea(new Dimension(100,50)));
 		loggedInPanel.add(logout);	
@@ -377,11 +461,6 @@ public class MenuView extends JPanel {
 		adminLoginPanel.add(adminUserPanel);
 		adminLoginPanel.add(adminPassPanel);
 		
-		voterCountPanel.add(numberOfVoters);
-		voterCountPanel.add(voterCount);
-		
-		adminSettings.add(voterCountPanel);
-		adminSettings.add(Box.createRigidArea(new Dimension(1,20)));
 		adminSettings.add(openRegistration);
 		adminSettings.add(Box.createRigidArea(new Dimension(1,20)));
 		adminSettings.add(openVoting);
@@ -511,19 +590,30 @@ public class MenuView extends JPanel {
 		return passField.getText();
 	}
 	
+	public String getRegUserInput(){
+		return regUserField.getText();
+	}
+	
+	public String getRegPassInput(){
+		return regPassField.getText();
+	}
+	
+	public String getRegFirstInput(){
+		return firstNameField.getText();
+	}
+	
+	public String getRegLastInput(){
+		return lastNameField.getText();
+	}
+	
+	public String getRegIdInput(){
+		return idField.getText();
+	}
+	
 	public String getAdminUserInput(){
 		return adminUserField.getText();
 	}
 	
-	public int getVoterCountInput(){
-		String voters = voterCount.getText();
-		if (!voters.trim().isEmpty()){
-			int temp = Integer.parseInt(voters);
-			System.out.println("Input voter count is " + temp);
-			return temp;
-		}
-		return 0;
-	}
 	
 	@SuppressWarnings("deprecation")
 	public String getAdminPassInput(){
@@ -548,6 +638,26 @@ public class MenuView extends JPanel {
 		passField.setText("");
 		adminUserField.setText("");
 		adminPassField.setText("");
+	}
+	
+	//Adds and removes fields to login panel to allow it to be used for registration
+	public void setLoginRegisterPanel(boolean isLogin){
+		if (isLogin){
+			loginPanel.remove(registerIdPanel);
+			loginPanel.remove(registerFirstPanel);
+			loginPanel.remove(registerLastPanel);
+		} 
+		else {
+			loginPanel.remove(loginUserPanel);
+			loginPanel.remove(loginPassPanel);
+			loginPanel.remove(Box.createRigidArea(new Dimension(1,200)));
+			loginPanel.add(registerFirstPanel);
+			loginPanel.add(registerLastPanel);
+			loginPanel.add(registerIdPanel);
+			loginPanel.add(loginUserPanel);
+			loginPanel.add(loginPassPanel);
+		}
+		
 	}
 
 }

@@ -44,7 +44,19 @@ public class UserManager {
 		String[] names6 = {"Samantha", "Greenland"};
 		eligibleVoters.put("450456", names6);
 		String[] names7 = {"John", "James"};
-		eligibleVoters.put("450456", names7);
+		eligibleVoters.put("783459", names7);
+	}
+	
+	private static HashMap<String, Boolean> eligibleRegistered;
+	static {
+		eligibleRegistered = new HashMap<String, Boolean>();
+		eligibleRegistered.put("190199", false);
+		eligibleRegistered.put("450456", false);
+		eligibleRegistered.put("348540", false);
+		eligibleRegistered.put("982238", false);
+		eligibleRegistered.put("934580", false);
+		eligibleRegistered.put("450456", false);
+		eligibleRegistered.put("783459", false);
 	}
 	
 	private HashMap<String, byte[]> adminPasswords;
@@ -83,6 +95,25 @@ public class UserManager {
 	
 	public void setActiveUser(String user){
 		activeUser = user;
+	}
+	
+	//Checks first name, last name and ID for a match in the eligible voters, also checks if user has already registered
+	public boolean checkEligible(String first, String last, String id){
+		if (eligibleVoters.get(id) != null){
+			System.out.println("Eligible voter retrieval for id " + id + " has been found");
+			String[] names = eligibleVoters.get(id);
+			if (names[0].equals(first) && names[1].equals(last) && !eligibleRegistered.get(id)){
+				return true;
+			}
+			System.out.println("Stored name " + names[0] + " does not match input name " + first + " OR");
+			System.out.println("Stored name " + names[1] + " does not match input name " + last + " OR");
+			System.out.println("Eligible registered is set to true: " + eligibleRegistered.get(id));
+		}
+		return false;
+	}
+	
+	public void setEligibleRegistered(String id){
+		eligibleRegistered.put(id, true);
 	}
 	
 	public void addUser(String user, String pass){

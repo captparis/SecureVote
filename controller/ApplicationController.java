@@ -198,16 +198,23 @@ public class ApplicationController {
 						menuView.setMessage("Username and password cannot be empty", Color.WHITE);
 					break;
 				case "registerconfirm":
-					System.out.println("Registering");
-					String newUser = menuView.getUserInput();
-					String newPass = menuView.getPassInput();
-					if (!newUser.equals("") && !newPass.equals("")){
-						userManager.addUser(newUser, newPass);
-						viewController.registered();
+					String first = menuView.getRegFirstInput();
+					String last = menuView.getRegLastInput();
+					String id = menuView.getRegIdInput();
+					if (userManager.checkEligible(first, last, id)){
+						System.out.println("Registering");
+						String newUser = menuView.getRegUserInput();
+						String newPass = menuView.getRegPassInput();
+						if (!newUser.equals("") && !newPass.equals("")){
+							userManager.addUser(newUser, newPass);
+							userManager.setEligibleRegistered(id);
+							viewController.registered();
+						}
+						else 
+							menuView.setMessage("Username and password cannot be empty", Color.WHITE);
 					}
-					else {
-						menuView.setMessage("Username and password cannot be empty", Color.WHITE);
-					}
+					else 
+						menuView.setMessage("Incorrect name or ID. Please check and try again", Color.WHITE);
 					break;
 				case "register":
 					viewController.register();
@@ -245,15 +252,9 @@ public class ApplicationController {
 					viewController.logout();
 					break;
 				case "openregistration":
-					int temp = menuView.getVoterCountInput();
-					if (temp != 0)	{
-						VoteReceiver.getInstance().setVoters(temp);
-						VoteReceiver.getInstance().setRegistrationState("opened");
-						JOptionPane.showMessageDialog(null, "Registration has been opened");
-						viewController.adminOptionsUpdate();
-					}
-					else 
-						JOptionPane.showMessageDialog(null, "Please enter number of voters before opening registration");
+					VoteReceiver.getInstance().setRegistrationState("opened");
+					JOptionPane.showMessageDialog(null, "Registration has been opened");
+					viewController.adminOptionsUpdate();
 					break;
 				case "openvoting":
 					VoteReceiver.getInstance().setVotingState("opened");

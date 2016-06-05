@@ -13,6 +13,7 @@ import receiver.VoteReceiver;
 public class ViewController {
 	
 	private UserManager userManager;
+	private boolean loginSet = true;
 	
 	//Views
 	private VoteView voteView;
@@ -128,7 +129,7 @@ public class ViewController {
 	}
 	
 	public void register(){
-		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "login");
+		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "register");
 		menuView.addRemoveElement("admin", false);
 		menuView.addRemoveElement("backregister", true);
 		menuView.addRemoveElement("register", true);
