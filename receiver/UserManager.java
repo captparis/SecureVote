@@ -2,6 +2,7 @@ package receiver;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,15 +18,28 @@ import javax.crypto.spec.PBEKeySpec;
 //Securely manages all users, including admins and handles encryption/decryption using java in built PBKDF2 libraries
 public class UserManager {
 	
+	private String activeUser;
+	
 	private HashMap<String, byte[]> voterPasswords;
 	private HashMap<String, byte[]> voterSalts;
+	private HashMap<String, Boolean> voterVoted;
+	
+	//List of hardcoded names and codes for eligible voters for this election
+	//This is based on official listings of voters
+	//A unique ID string is given to each candidate through other means which allows them to register
+	private HashMap<String, HashMap<String, String>> eligibleVoters; 
 	
 	private HashMap<String, byte[]> adminPasswords;
 	private HashMap<String, byte[]> adminSalts;
+	
+	// singleton
+	private static UserManager instance;
+		
 
-	public UserManager() {
+	private UserManager() {
 		voterPasswords = new HashMap<String, byte[]>();
 		voterSalts = new HashMap<String, byte[]>();
+		voterVoted = new HashMap<String, Boolean>();
 		adminPasswords = new HashMap<String, byte[]>();
 		adminSalts = new HashMap<String, byte[]>();
 		
@@ -37,12 +51,29 @@ public class UserManager {
 		addUser("a", "a");
 	}
 	
+	public static UserManager getInstance()
+	{
+      if(instance==null)
+         instance= new UserManager();
+      
+      return instance;
+	}
+	
+	public String getActiveUser(){
+		return activeUser;
+	}
+	
+	public void setActiveUser(String user){
+		activeUser = user;
+	}
+	
 	public void addUser(String user, String pass){
 		try {
 			byte[] salt = generateSalt();
 			try {
 				voterPasswords.put(user, encryptPassword(pass, salt));
 				voterSalts.put(user, salt);
+				voterVoted.put(user, false);
 			} catch (InvalidKeySpecException e) {
 				System.out.println("Unable to encrypt password");
 			}
@@ -64,6 +95,17 @@ public class UserManager {
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("Unable to generate salt");
 		}
+	}
+	
+	public void setVoted(String user, boolean voted){
+		voterVoted.put(user, voted);
+	}
+	
+	public boolean checkVoted(String user){
+		if (voterVoted.get(user) != null)
+			return voterVoted.get(user);
+		else 
+			return false;
 	}
 	
 	public boolean checkValidUser(String user, String pass, boolean admin){

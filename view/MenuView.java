@@ -38,6 +38,7 @@ public class MenuView extends JPanel {
 	private JPanel loggedInPanel;
 	private JPanel adminPanel;
 	private JPanel adminSettings;
+	private JPanel adminTally;
 	private JPanel voterCountPanel;
 	
 	public JPanel mainCards;
@@ -48,6 +49,7 @@ public class MenuView extends JPanel {
 	private JButton backAdmin;
 	private JButton backLogin;
 	private JButton backRegister;
+	private JButton backTally;
 	private JButton exit;
 	private JButton admin;
 	private JButton ok;
@@ -119,7 +121,7 @@ public class MenuView extends JPanel {
 		adminCards = new JPanel();
 		adminSettings = new JPanel();
 		voterCountPanel = new JPanel();
-		
+		adminTally = new JPanel();
 		
 		this.setPreferredSize(new Dimension (1024, 640));
 		this.setBackground(new Color(102, 224, 255));
@@ -135,6 +137,8 @@ public class MenuView extends JPanel {
 		
 		adminPanel.setPreferredSize(new Dimension(1024, 540));
 		adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
+		
+		adminTally.setLayout(new BoxLayout(adminTally, BoxLayout.Y_AXIS));
 		
 		adminPanel.setPreferredSize(new Dimension(1024, 540));
 		adminSettings.setLayout(new BoxLayout(adminSettings, BoxLayout.Y_AXIS));
@@ -183,6 +187,7 @@ public class MenuView extends JPanel {
 		adminCards.setOpaque(false);
 		adminSettings.setOpaque(false);
 		voterCountPanel.setOpaque(false);
+		adminTally.setOpaque(false);
 		
 		//CardLayout setup
 		mainCards.setLayout(new CardLayout());
@@ -202,6 +207,7 @@ public class MenuView extends JPanel {
 		backAdmin = new JButton("Back");
 		backLogin = new JButton("Back");
 		backRegister = new JButton("Back");
+		backTally = new JButton("Back");
 		exit = new JButton();
 		admin = new JButton("Admin");
 		ok = new JButton("Ok");
@@ -220,6 +226,7 @@ public class MenuView extends JPanel {
 		backAdmin.setName("backadmin");
 		backLogin.setName("backlogin");
 		backRegister.setName("backregister");
+		backTally.setName("backtally");
 		exit.setName("exit");
 		loginConfirm.setName("loginconfirm");
 		registerConfirm.setName("registerconfirm");
@@ -248,6 +255,7 @@ public class MenuView extends JPanel {
 		backAdmin.addActionListener(menuButtonListener);
 		backLogin.addActionListener(menuButtonListener);
 		backRegister.addActionListener(menuButtonListener);
+		backTally.addActionListener(menuButtonListener);
 		exit.addActionListener(menuButtonListener);
 		admin.addActionListener(menuButtonListener);
 		ok.addActionListener(menuButtonListener);
@@ -380,8 +388,16 @@ public class MenuView extends JPanel {
 		adminSettings.setPreferredSize(new Dimension(1024, 800));
 		adminSettings.add(Box.createRigidArea(new Dimension(1,100)));
 		
+		adminTally.add(voteView.voteCount1);
+		adminTally.add(voteView.voteCount2);
+		adminTally.add(voteView.voteCount3);
+		adminTally.add(voteView.voteCount4);
+		adminTally.add(voteView.voteCount5);
+		adminTally.add(backTally);
+		
 		adminCards.add(adminLoginPanel, "login");
 		adminCards.add(adminSettings, "settings");
+		adminCards.add(adminTally, "tally");
 		adminCards.setPreferredSize(new Dimension(1024, 700));
 		
 		//TODO change logo for different image to indicate admin login
@@ -430,6 +446,10 @@ public class MenuView extends JPanel {
 			openRegistration.setEnabled(enabled);
 		else if (element == "register")
 			register.setEnabled(enabled);
+		else if (element == "vote")
+			vote.setEnabled(enabled);
+		else if (element == "register")
+			register.setEnabled(enabled);
 		
 	}
 	
@@ -442,6 +462,8 @@ public class MenuView extends JPanel {
 				footerWest.add(backLogin);
 			else if (element == "backregister")
 				footerWest.add(backRegister);
+			else if (element == "backtally")
+				footerWest.add(backTally);
 			else if (element == "admin")
 				footerWest.add(admin);
 			else if (element == "login")
@@ -459,6 +481,8 @@ public class MenuView extends JPanel {
 				footerWest.remove(backRegister);
 			else if (element == "admin")
 				footerWest.remove(admin);
+			else if (element == "backtally")
+				footerWest.remove(backTally);
 			else if (element == "login"){
 				footerEast.remove(loginConfirm);
 				userField.setText("");

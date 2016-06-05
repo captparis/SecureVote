@@ -13,7 +13,7 @@ public class VoteSender {
 	private int encryptedVote;
 	private long random;
 	
-	private BigInteger[] publicKeys;
+	private long[] publicKeys;
 	
 	private VoteReceiver voteReceiver;
 	
@@ -22,7 +22,7 @@ public class VoteSender {
 	public BigInteger nSquare;
 	
 	//Holds username of active user
-	public String activeUser = "";
+	//public String activeUser = "";
 	
 
 	public VoteSender() {
@@ -39,18 +39,18 @@ public class VoteSender {
 		System.out.println("Encrypting Vote, candidate is " + vote);
 		Random rand = new Random();
 		random = rand.nextInt(1000) + 1;
-		while(getGcd(random, publicKeys[0].intValue()) != 1){
+		while(getGcd(random, publicKeys[0]) != 1){
 			random = rand.nextInt(10000) + 1;
 		}
 		System.out.println("");
 		System.out.println("Public key 1 is " + publicKeys[0] + " and public key 2 is " + publicKeys[1]);
-		encrypted = publicKeys[1];
+		encrypted = BigInteger.valueOf(publicKeys[1]);
 		encrypted = encrypted.pow(vote);
 		randomPower = BigInteger.valueOf(random);
-		randomPower = randomPower.pow(publicKeys[0].intValue());
+		randomPower = randomPower.pow((int) publicKeys[0]);
 		encrypted = encrypted.multiply(randomPower);
 		
-		nSquare = publicKeys[0].multiply(publicKeys[0]);
+		nSquare = BigInteger.valueOf(publicKeys[0] * publicKeys[0]);
 		
 		encrypted = encrypted.remainder(nSquare);
 		
@@ -89,5 +89,18 @@ public class VoteSender {
 		return num1;
 	}
 	
+	//Raises a BigInteger to a power of another BigInteger (default methods only allow for power of int)
+	public BigInteger pow(BigInteger base, BigInteger exponent){
+		System.out.println("Getting " + base + " to the power of " + exponent);
+		BigInteger result = BigInteger.ONE;
+		while (exponent.signum() > 0) {
+			if (exponent.testBit(0)) result = result.multiply(base);
+			base = base.multiply(base);
+			exponent = exponent.shiftRight(1);
+			System.out.println("Power of result is " + result);
+		}
+		
+		return result;
+	}
 
 }

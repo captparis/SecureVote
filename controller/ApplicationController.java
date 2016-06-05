@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 import receiver.UserManager;
 import receiver.VoteReceiver;
@@ -28,10 +29,14 @@ public class ApplicationController {
 	private ViewController viewController;
 	private UserManager userManager;
 	
+	private JFrame mainWindow;
+	
 	private int selectionCounter = 0;
 	private int selectionMax = 1;
 	private int selection1;
 	private int selection2;
+	
+	
 	
 	VoteListener voteListener = new VoteListener();
 	VoteButtonListener voteButtonListener = new VoteButtonListener();
@@ -48,13 +53,14 @@ public class ApplicationController {
 		menuView = new MenuView(menuButtonListener, voteView);
 		
 		viewController = new ViewController(menuView, voteView, mainWindow);
-		userManager = new UserManager();
+		userManager = UserManager.getInstance();
 		
 		voteSender = new VoteSender();
 		
 		//mainWindow.add(voteView);
 		
 		mainWindow.getContentPane().add(viewController.mainCards);
+		this.mainWindow = mainWindow;
 		
 		
 	}
@@ -117,13 +123,20 @@ public class ApplicationController {
 			switch (option) {
 			case "vote":
 				if (voteView.voterCounter < 1){
+					//TODO Tallying should not occur here
 					JOptionPane.showMessageDialog(null, "All voters have voted, please tally votes");
+				}
+				else if (userManager.checkVoted(userManager.getActiveUser())){
+					//Should not be called, user should be taken from vote section after vote, code here is backup
+					JOptionPane.showMessageDialog(null, "You have already cast a vote");
 				}
 				else {
 					voteSender.sendVote(selection1, selection2);
 					voteView.reduceVoters();
+					userManager.setVoted(userManager.getActiveUser(), true);
 					//selection1 = 0;
 					//selection2 = 0;
+					viewController.backFromVote();
 				}
 				break;
 			case "exit":
@@ -144,6 +157,9 @@ public class ApplicationController {
 			case "tally":
 				List<Integer> candidateVotes = VoteReceiver.getInstance().tallyVotes();
 				voteView.setVoteCount(candidateVotes);
+				break;
+			case "back":
+				viewController.backFromVote();
 				break;
 			}
 			
@@ -172,7 +188,7 @@ public class ApplicationController {
 					if (!user.equals("") && !pass.equals("")){
 						if (userManager.checkValidUser(user, pass, false)){
 							viewController.loggedIn(user);
-							voteSender.activeUser = user;
+							userManager.setActiveUser(user);
 						}
 						else {
 							menuView.setMessage("Invalid username or password, please try again", Color.WHITE);
@@ -205,7 +221,7 @@ public class ApplicationController {
 					if (!adminUser.equals("") && !adminPass.equals("")){
 						if (userManager.checkValidUser(adminUser, adminPass, true)){
 							viewController.adminLoggedIn();
-							voteSender.activeUser = adminUser;
+							userManager.setActiveUser(adminUser);
 							System.out.println("Valid admin credentials");
 						}
 						else {
@@ -225,7 +241,7 @@ public class ApplicationController {
 					viewController.backFromRegister();
 					break;
 				case "logout":
-					voteSender.activeUser = "";
+					userManager.setActiveUser("");
 					viewController.logout();
 					break;
 				case "openregistration":
@@ -251,22 +267,41 @@ public class ApplicationController {
 					viewController.adminOptionsUpdate();
 					break;
 				case "tallyvotes":
+					viewController.adminTally();
+					break;
+				case "backtally":
+					viewController.backFromTally();
 					break;
 				case "vote":
 					String state = VoteReceiver.getInstance().getVotingState();
 					System.out.println("voting state is " + state);
-					if (state == "opened")
-						VoteReceiver.getInstance().createKeys();
-						voteSender.requestPublicKeys();
-						voteView.setVotersNum(VoteReceiver.getInstance().getVoters());
-						viewController.moveToVote();
-					if (state == "closed")
-						VoteReceiver.getInstance().createKeys();
-						voteSender.requestPublicKeys();
-						voteView.setVotersNum(VoteReceiver.getInstance().getVoters());
-						viewController.moveToVote();
-					if (state == "finished")
-						System.out.println("Voting is finished, thanks for your vote");
+					if (userManager.checkVoted(userManager.getActiveUser())){
+						JOptionPane.showMessageDialog(null, "You have already cast a vote");
+					}
+					else if (state == "opened"){
+						menuView.setMessage("Opening secure voting, please wait...", Color.WHITE);
+
+						Timer openVotingTimer = new Timer(5, new ActionListener(){
+							@Override
+							public void actionPerformed (ActionEvent e){
+								VoteReceiver.getInstance().createKeys();
+								voteSender.requestPublicKeys();
+								voteView.setVotersNum(VoteReceiver.getInstance().getVoters());
+								viewController.moveToVote();
+							}
+						});	
+						
+						openVotingTimer.setRepeats(false);
+						openVotingTimer.start();
+					
+					}
+					else if (state == "closed"){
+						//Should not be called as 'Vote' button is disabled when voting is closed, code here is backup
+						JOptionPane.showMessageDialog(null, "Voting is currently closed");
+					}
+					else if (state == "finished")
+						//Should not be called as 'Vote' button is disabled when voting is finished, code here is backup
+						JOptionPane.showMessageDialog(null, "Voting is finished, thanks for your vote");
 					break;
 			}
 		}

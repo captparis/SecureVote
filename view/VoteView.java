@@ -36,6 +36,7 @@ public class VoteView extends JPanel {
 	private JButton exit;
 	private JButton tally;
 	private JButton decrypt;
+	private JButton back;
 	
 	//Labels
 	private JLabel title;
@@ -43,13 +44,13 @@ public class VoteView extends JPanel {
 	private JLabel votersLeft;
 	private JLabel thankYou;
 	
-	private JLabel voteCount1;
-	private JLabel voteCount2;
-	private JLabel voteCount3;
-	private JLabel voteCount4;
-	private JLabel voteCount5;
-	private JLabel voteCount6;
-	private JLabel voteCount7;
+	JLabel voteCount1;
+	JLabel voteCount2;
+	JLabel voteCount3;
+	JLabel voteCount4;
+	JLabel voteCount5;
+	JLabel voteCount6;
+	JLabel voteCount7;
 	
 	//Checkboxes
 	private JCheckBox check1;
@@ -108,18 +109,22 @@ public class VoteView extends JPanel {
 		tally = new JButton("Tally Votes");
 		decrypt = new JButton("Decrypt");
 		openVoting = new JButton("Open Voting");
+		back = new JButton("Back");
 		vote.setName("vote");
 		exit.setName("exit");
 		tally.setName("tally");
 		decrypt.setName("decrypt");
 		openVoting.setName("open");
+		back.setName("back");
 		vote.addActionListener(buttonListener);
 		exit.addActionListener(buttonListener);
 		tally.addActionListener(buttonListener);
 		decrypt.addActionListener(buttonListener);
 		openVoting.addActionListener(buttonListener);
+		back.addActionListener(buttonListener);
 		vote.setAlignmentX(Component.CENTER_ALIGNMENT);
 		tally.setAlignmentX(Component.CENTER_ALIGNMENT);
+		back.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		//Label setup
 		title = new JLabel("Cast your vote");
@@ -198,17 +203,15 @@ public class VoteView extends JPanel {
 		candidatePanel.add(check4);
 		candidatePanel.add(Box.createRigidArea(new Dimension(10,10)));
 		candidatePanel.add(check5);
-		candidatePanel.add(Box.createRigidArea(new Dimension(10,10)));
-		candidatePanel.add(check6);
-		candidatePanel.add(Box.createRigidArea(new Dimension(10,10)));
-		candidatePanel.add(check7);
 		
 		candidateOffset.add(Box.createRigidArea(new Dimension(10,20)));
 		candidateOffset.add(candidatePanel);
 		
 		buttonPanel.add(vote);
 		//buttonPanel.add(exit);
+		buttonPanel.add(back);
 		buttonPanel.add(tally);
+		
 		
 		votedPanel.add(thankYou);
 		
@@ -228,8 +231,6 @@ public class VoteView extends JPanel {
 		verticalContainer.add(voteCount3);
 		verticalContainer.add(voteCount4);
 		verticalContainer.add(voteCount5);
-		verticalContainer.add(voteCount6);
-		verticalContainer.add(voteCount7);
 		
 		mainCards.add(menuPanel, "menuScreen");
 		mainCards.add(verticalContainer, "voteScreen");
@@ -266,16 +267,13 @@ public class VoteView extends JPanel {
 		voteCount3.setText("Votes for candidate " + check3.getName() + ": " + votes.get(2));
 		voteCount4.setText("Votes for candidate " + check4.getName() + ": " + votes.get(3));
 		voteCount5.setText("Votes for candidate " + check5.getName() + ": " + votes.get(4));
-		voteCount6.setText("Votes for candidate " + check6.getName() + ": " + votes.get(5));
-		voteCount7.setText("Votes for candidate " + check7.getName() + ": " + votes.get(6));
 		
 		System.out.println("Votes for candidate " + check1.getName() + ": " + votes.get(0));
 		System.out.println("Votes for candidate " + check2.getName() + ": " + votes.get(1));
 		System.out.println("Votes for candidate " + check3.getName() + ": " + votes.get(2));
 		System.out.println("Votes for candidate " + check4.getName() + ": " + votes.get(3));
 		System.out.println("Votes for candidate " + check5.getName() + ": " + votes.get(4));
-		System.out.println("Votes for candidate " + check6.getName() + ": " + votes.get(5));
-		System.out.println("Votes for candidate " + check7.getName() + ": " + votes.get(6));
+
 		
 	}
 

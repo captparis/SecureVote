@@ -30,23 +30,21 @@ public class VoteReceiver {
 	private List<Integer> candidateVotes = new ArrayList<Integer>();
 	
 	//Private key variables
-	private BigInteger privateKey1;
-	private BigInteger privateKey2;
+	private long privateKey1;
+	private long privateKey2;
 	private long k;
 	
 	
 	//Public key variables
-	private BigInteger publicKeyN;
-	private BigInteger publicKeyG;
-	public BigInteger[] keys;
-	
-	
-	//private long prime1;
-	//private long prime2;
-	//private long primeMultiple;
-	//private long primeMultipleSquared;
+	private long publicKeyN;
+	private long publicKeyG;
+	public long[] keys;
+	private long prime1;
+	private long prime2;
+	private long primeMultiple;
+	private long primeMultipleSquared;
 	private long gcdCheck;
-	private BigInteger g;
+	private long g;
 	
 	//Big Integers
 	private BigInteger bigPrivate1;
@@ -66,7 +64,7 @@ public class VoteReceiver {
 	private Random rand = new Random();
 	private CloudVoteCalculator cloud;
 	private int votersNum = 5;
-	private int candidatesNum = 7;
+	private int candidatesNum = 5;
 	
 	// singleton
 	private static VoteReceiver instance;
@@ -95,50 +93,37 @@ public class VoteReceiver {
 	public void createKeys(){
 		int tMax = (int) (votersNum * (Math.pow(10, candidatesNum-1)));
 		//Ensure n is greater than tMax
-		BigInteger bigTmax = BigInteger.valueOf(tMax);
-		bigPrime1 = getBigPrimeNumber();
-		bigPrime2 = bigPrime1;
-		
-		while ((bigPrime1.multiply(bigPrime2)).compareTo(bigTmax) == -1 || (bigPrime1.multiply(bigPrime2)).compareTo(bigTmax) == 0){
-			//prime1 = getPrimeNumber();
-			//prime2 = prime1;
-			
-		
+		while ((prime1 * prime2) <= tMax){
+			prime1 = getPrimeNumber();
+			prime2 = prime1;
 			
 			//Ensure prime1 does not equal prime2 and that the GCD is equal to 1
-			//while (prime1 == prime2 || getGcd((prime1*prime2), ((prime1-1)*(prime2-1))) != 1){
-				//prime2 = getPrimeNumber();
-			//}
-			
-			while (bigPrime1.compareTo(bigPrime2) == 1 || getBigGcd(bigPrime1.multiply(bigPrime2), bigPrime1.subtract(BigInteger.ONE).multiply(bigPrime2.subtract(BigInteger.ONE))) != BigInteger.ONE) {
-				bigPrime2 = getBigPrimeNumber();
+			while (prime1 == prime2 || getGcd((prime1*prime2), ((prime1-1)*(prime2-1))) != 1){
+				prime2 = getPrimeNumber();
 			}
-			System.out.println("Prime number 1 is " + bigPrime1 + " and prime number 2 is " + bigPrime2);
+			System.out.println("Prime number 1 is " + prime1 + " and prime number 2 is " + prime2);
 		}
 		
-		//primeMultiple = prime1 * prime2;
-		//primeMultipleSquared = primeMultiple * primeMultiple;
+		primeMultiple = prime1 * prime2;
+		bigPrimeMultiple = BigInteger.valueOf(primeMultiple);
+		primeMultipleSquared = primeMultiple * primeMultiple;
+		bigPrimeMultipleSquared = BigInteger.valueOf(primeMultipleSquared);
+		System.out.println("Multiple of two primes is " + primeMultiple + " and multiple squared is " + primeMultipleSquared);
 		
-		bigPrimeMultiple = bigPrime1.multiply(bigPrime2);
-		bigPrimeMultipleSquared = bigPrimeMultiple.multiply(bigPrimeMultiple);
-		
-		System.out.println("Multiple of two primes is " + bigPrimeMultiple + " and multiple squared is " + bigPrimeMultipleSquared);
-		
-		n = bigPrimeMultiple;
-		nSquared = bigPrimeMultipleSquared;
+		n = BigInteger.valueOf(primeMultiple);
+		nSquared = BigInteger.valueOf(primeMultipleSquared);
 		
 		//Calculate private key 1 here as it is also used to choose g
-		BigInteger bigPrivateKey1 = getBigLcm((bigPrime1.subtract(BigInteger.ONE)), (bigPrime2.subtract(BigInteger.ONE)));
-		privateKey1 = bigPrivateKey1;
+		privateKey1 = getLcm((prime1 - 1), (prime2 - 1));
 		
 		g = getG();
 		
 		System.out.println("g = " + g);
 		
-		publicKeyN = bigPrimeMultiple;
+		publicKeyN = primeMultiple;
 		publicKeyG = g;
 		
-		keys = new BigInteger[2];
+		keys = new long[2];
 		keys[0] = publicKeyN;
 		keys[1] = publicKeyG;
 		
@@ -147,22 +132,22 @@ public class VoteReceiver {
 	
 	public void createPrivateKey(){
 		
-		BigInteger u = g;
-		BigInteger n = bigPrimeMultiple;
-		BigInteger nSquare = bigPrimeMultipleSquared;
-		u = u.pow(privateKey1.intValue());
+		BigInteger u = BigInteger.valueOf(g);
+		BigInteger n = BigInteger.valueOf(primeMultiple);
+		BigInteger nSquare = BigInteger.valueOf(primeMultipleSquared);
+		u = u.pow((int) privateKey1);
 		u = u.remainder(nSquare);
 		BigInteger L = u.subtract(BigInteger.ONE);
 		L = L.divide(n);
 		
 		BigInteger privateKey = L.modPow(BigInteger.ONE.negate(), n);
 		
-		privateKey2 = privateKey;
+		privateKey2 = privateKey.longValue();
 		System.out.println("Calculated private key 2 is " + privateKey2);
 		System.out.println("Private keys are " + privateKey1 + " and " + privateKey2);
 		
-		bigPrivate1 = privateKey1;
-		bigPrivate2 = privateKey2;
+		bigPrivate1 = BigInteger.valueOf(privateKey1);
+		bigPrivate2 = BigInteger.valueOf(privateKey2);
 	}
 	
 	
@@ -170,7 +155,7 @@ public class VoteReceiver {
 		this.encryptedVote = vote;
 		votes.add(encryptedVote);
 		System.out.println("Receiver thinks encrypted vote is " + this.encryptedVote);
-		decryptVote();
+		//decryptVote();
 	}
 	
 	
@@ -179,7 +164,7 @@ public class VoteReceiver {
 		System.out.println("");
 		System.out.println("BEGINNING DECRYPTION");
 		
-		cPower = encryptedVote.pow(privateKey1.intValue());
+		cPower = encryptedVote.pow((int)privateKey1);
 		BigInteger n = bigPrimeMultiple;
 		BigInteger nSquare = bigPrimeMultipleSquared;
 		BigInteger one = new BigInteger("1");
@@ -208,11 +193,11 @@ public class VoteReceiver {
 		
 		int num = 0;
 		
-		num = rand.nextInt(1000) + 1 + primeMinimum;
-		primeMultipler = rand.nextInt(1000) + 1;
+		num = rand.nextInt(2000) + 1 + primeMinimum;
+		primeMultipler = rand.nextInt(2000) + 1;
 		
 		while(!isPrime(num)){
-			num = rand.nextInt(1000) + 1 + primeMinimum;
+			num = rand.nextInt(2000) + 1 + primeMinimum;
 		}
 		
 		return num;
@@ -242,21 +227,21 @@ public class VoteReceiver {
 	}
 	
 	//Returns a valid g 
-	public BigInteger getG(){
+	public long getG(){
 		System.out.println("");
 		System.out.println("FINDING G");
 		BigInteger u = new BigInteger("1000000000000000000000000000000000");
 		
-		BigInteger g = BigInteger.valueOf(rand.nextInt(10000));
-		while(getBigGcd(g, bigPrimeMultipleSquared).compareTo(BigInteger.ONE) != 0 || u.compareTo(BigInteger.ONE) != 0){
-			g = BigInteger.valueOf(rand.nextInt(10000));
+		long g = rand.nextInt(10000);
+		while(getGcd(g, primeMultipleSquared) != 1 || u.compareTo(BigInteger.ONE) != 0){
+			g = rand.nextInt(10000);
 			
-			u = g;
+			u = BigInteger.valueOf(g);
 			System.out.println("U has taken value of random g and is " + u);
-			u = u.pow(privateKey1.intValue());
+			u = u.pow((int) privateKey1);
 			
-			//BigInteger bigPrimeMultipleSquared = BigInteger.valueOf(primeMultipleSquared);
-			//BigInteger bigPrimeMultiple = BigInteger.valueOf(primeMultiple);
+			BigInteger bigPrimeMultipleSquared = BigInteger.valueOf(primeMultipleSquared);
+			BigInteger bigPrimeMultiple = BigInteger.valueOf(primeMultiple);
 			
 			u = u.remainder(bigPrimeMultipleSquared);
 			u = u.subtract(BigInteger.ONE);
@@ -358,7 +343,7 @@ public class VoteReceiver {
 	}
 	
 	public List<Integer> decryptTally(BigInteger tally){
-		BigInteger u = tally.pow(privateKey1.intValue());
+		BigInteger u = tally.pow((int)privateKey1);
 		u = u.remainder(nSquared);
 		u = u.subtract(BigInteger.ONE);
 		u = u.divide(n);

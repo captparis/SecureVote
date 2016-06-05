@@ -6,10 +6,13 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import receiver.UserManager;
 import receiver.VoteReceiver;
 
 //Handles bulk view changes made when moving to different screens
 public class ViewController {
+	
+	private UserManager userManager;
 	
 	//Views
 	private VoteView voteView;
@@ -40,6 +43,9 @@ public class ViewController {
 		
 		mainLayout = (CardLayout) mainCards.getLayout();
 		mainLayout.show(mainCards, "menu");
+		setVoterOptions();
+		
+		userManager = UserManager.getInstance();
 	}
 	
 	//sets the message for main screen based on VoteReceiver state
@@ -48,8 +54,10 @@ public class ViewController {
 		String voteState = voteReceiver.getVotingState();
 		if (regState == "opened")
 			menuView.setMessage("Registration is now open. Please register below", Color.WHITE);
+		else if (userManager.checkVoted(userManager.getActiveUser()))
+			menuView.setMessage("Thank you for voting", Color.WHITE);
 		else if (voteState == "opened")
-			menuView.setMessage("Voting is now open. Please vote below", Color.WHITE);
+			menuView.setMessage("Voting is now open. Please cast your vote", Color.WHITE);
 		else 
 			menuView.setMessage("Welcome to e-Vote", Color.WHITE);
 	}
@@ -84,6 +92,20 @@ public class ViewController {
 		
 	}
 	
+	//sets which voter options are enabled based on VoteReceiver state
+	public void setVoterOptions(){
+		String regState = voteReceiver.getRegistrationState();
+		String voteState = voteReceiver.getVotingState();
+		if (regState == "opened") 
+			menuView.setElementEnabled("register", true);
+		else
+			menuView.setElementEnabled("register", false);
+		if (voteState == "opened")
+			menuView.setElementEnabled("vote", true);
+		else
+			menuView.setElementEnabled("vote", false);
+	}
+	
 	public void login(){
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "login");
 		menuView.addRemoveElement("admin", false);
@@ -94,6 +116,7 @@ public class ViewController {
 	}
 	
 	public void loggedIn(String username){
+		setVoterOptions();
 		menuView.setUsername(username);
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loggedin");
 		menuView.addRemoveElement("admin", true);
@@ -113,6 +136,7 @@ public class ViewController {
 	}
 	
 	public void registered(){
+		setVoterOptions();
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loginregister");
 		menuView.addRemoveElement("admin", true);
 		menuView.addRemoveElement("backregister", false);
@@ -122,6 +146,7 @@ public class ViewController {
 	}
 	
 	public void adminLogin(){
+		logout();
 		menuView.mainLayout.show(menuView.mainCards, "admin");
 		menuView.addRemoveElement("admin", false);
 		menuView.addRemoveElement("backadmin", true);
@@ -140,7 +165,22 @@ public class ViewController {
 		mainWindow.repaint();
 	}
 	
+	public void adminTally(){
+		menuView.adminLayout.show(menuView.adminCards, "tally");
+		menuView.addRemoveElement("backadmin", false);
+		menuView.addRemoveElement("backtally", true);
+		mainWindow.repaint();
+	}
+	
+	public void backFromTally(){
+		menuView.adminLayout.show(menuView.adminCards, "settings");
+		menuView.addRemoveElement("backadmin", true);
+		menuView.addRemoveElement("backtally", false);
+		mainWindow.repaint();
+	}
+	
 	public void backFromAdmin(){
+		setVoterOptions();
 		menuView.mainLayout.show(menuView.mainCards, "home");
 		menuView.adminLayout.show(menuView.adminCards, "login");
 		menuView.setUsername("Not logged in");
@@ -152,6 +192,7 @@ public class ViewController {
 	}
 	
 	public void backFromLogin(){
+		setVoterOptions();
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loginregister");
 		menuView.addRemoveElement("admin", true);
 		menuView.addRemoveElement("backlogin", false);
@@ -161,6 +202,7 @@ public class ViewController {
 	}
 	
 	public void backFromRegister(){
+		setVoterOptions();
 		menuView.loginRegisterLayout.show(menuView.loginRegisterCards, "loginregister");
 		menuView.addRemoveElement("admin", true);
 		menuView.addRemoveElement("backregister", false);
@@ -168,6 +210,13 @@ public class ViewController {
 		setMessage();
 		mainWindow.repaint();
 		
+	}
+	
+	public void backFromVote(){
+		menuView.mainLayout.show(menuView.mainCards, "home");
+		menuView.addRemoveElement("admin", true);
+		setMessage();
+		mainWindow.repaint();
 	}
 	
 	public void logout(){
