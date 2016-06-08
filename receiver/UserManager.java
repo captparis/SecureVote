@@ -66,7 +66,7 @@ public class UserManager {
 		addEligible("Sally", "Jones", "348540");
 		addEligible("Leigh", "Friday", "982238");
 		addEligible("Olivia", "Schwarz", "934580");
-		addEligible("Samantha", "Greenland", "450456");
+		addEligible("Samantha", "Greenland", "450457");
 		addEligible("John", "James", "783459");
 	}
 	

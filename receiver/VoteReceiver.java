@@ -72,6 +72,7 @@ public class VoteReceiver {
 	
 	private VoteReceiver(){
 		cloud = new CloudVoteCalculator();
+		createKeys();
 	}
 	
 	public void setVoters(int voters){

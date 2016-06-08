@@ -257,7 +257,6 @@ public class ApplicationController {
 					viewController.adminOptionsUpdate();
 					break;
 				case "openvoting":
-					VoteReceiver.getInstance().createKeys();
 					VoteReceiver.getInstance().setVotingState("opened");
 					VoteReceiver.getInstance().setRegistrationState("finished");
 					JOptionPane.showMessageDialog(null, "Voting has been opened, registration automatically closed");

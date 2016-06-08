@@ -266,11 +266,11 @@ public class VoteView extends JPanel {
 	public void setVoteCount(List<Integer> votes){
 		voteLayout.show(voteCards, "voteOver");
 		votersLeft.setText("Registered voters who did not cast a vote: " + voterCounter);
-		voteCount1.setText("Votes for candidate " + check1.getName() + ": " + votes.get(0));
-		voteCount2.setText("Votes for candidate " + check2.getName() + ": " + votes.get(1));
-		voteCount3.setText("Votes for candidate " + check3.getName() + ": " + votes.get(2));
-		voteCount4.setText("Votes for candidate " + check4.getName() + ": " + votes.get(3));
-		voteCount5.setText("Votes for candidate " + check5.getName() + ": " + votes.get(4));
+		voteCount1.setText("Votes for candidate " + check1.getText() + ": " + votes.get(0));
+		voteCount2.setText("Votes for candidate " + check2.getText() + ": " + votes.get(1));
+		voteCount3.setText("Votes for candidate " + check3.getText() + ": " + votes.get(2));
+		voteCount4.setText("Votes for candidate " + check4.getText() + ": " + votes.get(3));
+		voteCount5.setText("Votes for candidate " + check5.getText() + ": " + votes.get(4));
 		
 		System.out.println("Votes for candidate " + check1.getName() + ": " + votes.get(0));
 		System.out.println("Votes for candidate " + check2.getName() + ": " + votes.get(1));
