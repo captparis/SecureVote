@@ -184,7 +184,7 @@ public class ApplicationController {
 					break;
 				case "loginconfirm":
 					String user = menuView.getUserInput();
-					String pass = menuView.getPassInput();
+					char[] pass = menuView.getPassInput();
 					if (!user.equals("") && !pass.equals("")){
 						if (userManager.checkValidUser(user, pass, false)){
 							viewController.loggedIn(user);
@@ -224,7 +224,7 @@ public class ApplicationController {
 					break;
 				case "adminloginconfirm":
 					String adminUser = menuView.getAdminUserInput();
-					String adminPass = menuView.getAdminPassInput();
+					char[] adminPass = menuView.getAdminPassInput();
 					if (!adminUser.equals("") && !adminPass.equals("")){
 						if (userManager.checkValidUser(adminUser, adminPass, true)){
 							viewController.adminLoggedIn();

@@ -591,8 +591,8 @@ public class MenuView extends JPanel {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public String getPassInput(){
-		return passField.getText();
+	public char[] getPassInput(){
+		return passField.getPassword();
 	}
 	
 	public String getRegUserInput(){
@@ -619,10 +619,8 @@ public class MenuView extends JPanel {
 		return adminUserField.getText();
 	}
 	
-	
-	@SuppressWarnings("deprecation")
-	public String getAdminPassInput(){
-		return adminPassField.getText();
+	public char[] getAdminPassInput(){
+		return adminPassField.getPassword();
 	}
 	
 	public void setMessage(String message, Color color){

@@ -166,10 +166,10 @@ public class UserManager {
 			return false;
 	}
 	
-	public boolean checkValidUser(String user, String pass, boolean admin){
+	public boolean checkValidUser(String user, char[] passChar, boolean admin){
 		
 		boolean valid = false;
-		
+		String pass = String.valueOf(passChar);
 		//Try to match password by re-encrypting given password
 		try {
 			if (!admin) {
